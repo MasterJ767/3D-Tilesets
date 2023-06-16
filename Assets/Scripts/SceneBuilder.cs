@@ -137,8 +137,64 @@ public class SceneBuilder : MonoBehaviour
                 AddMapEntry(dest, tileIndex, 30);
             }
             // 1 corner
+            else if ((sides & 223) == 223) //  neighboured on all 4 sides cutout on bottom left
+            {
+                AddMapEntry(dest, tileIndex, 48);
+            }
+            else if ((sides & 127) == 127) //  neighboured on all 4 sides cutout on top left
+            {
+                AddMapEntry(dest, tileIndex, 49);
+            }
+            else if ((sides & 253) == 253) //  neighboured on all 4 sides cutout on top right
+            {
+                AddMapEntry(dest, tileIndex, 50);
+            }
+            else if ((sides & 247) == 247) //  neighboured on all 4 sides cutout on bottom right
+            {
+                AddMapEntry(dest, tileIndex, 51);
+            }
             // 2 corners
+            else if ((sides & 215) == 215) //  neighboured on all 4 sides cutout on bottom right and bottom left
+            {
+                AddMapEntry(dest, tileIndex, 52);
+            }
+            else if ((sides & 95) == 95) //  neighboured on all 4 sides cutout on top left and bottom left
+            {
+                AddMapEntry(dest, tileIndex, 53);
+            }
+            else if ((sides & 125) == 125) //  neighboured on all 4 sides cutout on top left and top right
+            {
+                AddMapEntry(dest, tileIndex, 54);
+            }
+            else if ((sides & 245) == 245) //  neighboured on all 4 sides cutout on bottom right and top right
+            {
+                AddMapEntry(dest, tileIndex, 55);
+            }
+            else if ((sides & 221) == 221) //  neighboured on all 4 sides cutout on bottom left and top right
+            {
+                AddMapEntry(dest, tileIndex, 56);
+            }
+            else if ((sides & 119) == 119) //  neighboured on all 4 sides cutout on top left and bottom right
+            {
+                AddMapEntry(dest, tileIndex, 57);
+            }
             // 3 corners
+            else if ((sides & 87) == 87) // neighboured on all 4 sides cutout on top left, bottom left and bottom right
+            {
+                AddMapEntry(dest, tileIndex, 58);
+            }
+            else if ((sides & 93) == 93) // neighboured on all 4 sides cutout on top left, bottom left and top right
+            {
+                AddMapEntry(dest, tileIndex, 59);
+            }
+            else if ((sides & 117) == 117) // neighboured on all 4 sides cutout on top left, bottom right and top right
+            {
+                AddMapEntry(dest, tileIndex, 60);
+            }
+            else if ((sides & 213) == 213) // neighboured on all 4 sides cutout on bottom left, bottom right and top right
+            {
+                AddMapEntry(dest, tileIndex, 61);
+            }
             // 4 corners
             else if ((sides & 85) == 85) // neighboured on all 4 sides
             {
@@ -417,8 +473,64 @@ public class SceneBuilder : MonoBehaviour
                 ReplaceMapEntry(dest, 30);
             }
             // 1 corner
+            else if ((sides & 223) == 223) //  neighboured on all 4 sides cutout on bottom left
+            {
+                ReplaceMapEntry(dest, 48);
+            }
+            else if ((sides & 127) == 127) //  neighboured on all 4 sides cutout on top left
+            {
+                ReplaceMapEntry(dest, 49);
+            }
+            else if ((sides & 253) == 253) //  neighboured on all 4 sides cutout on top right
+            {
+                ReplaceMapEntry(dest, 50);
+            }
+            else if ((sides & 247) == 247) //  neighboured on all 4 sides cutout on bottom right
+            {
+                ReplaceMapEntry(dest, 51);
+            }
             // 2 corners
+            else if ((sides & 215) == 215) //  neighboured on all 4 sides cutout on bottom right and bottom left
+            {
+                ReplaceMapEntry(dest, 52);
+            }
+            else if ((sides & 95) == 95) //  neighboured on all 4 sides cutout on top left and bottom left
+            {
+                ReplaceMapEntry(dest, 53);
+            }
+            else if ((sides & 125) == 125) //  neighboured on all 4 sides cutout on top left and top right
+            {
+                ReplaceMapEntry(dest, 54);
+            }
+            else if ((sides & 245) == 245) //  neighboured on all 4 sides cutout on bottom right and top right
+            {
+                ReplaceMapEntry(dest, 55);
+            }
+            else if ((sides & 221) == 221) //  neighboured on all 4 sides cutout on bottom left and top right
+            {
+                ReplaceMapEntry(dest, 56);
+            }
+            else if ((sides & 119) == 119) //  neighboured on all 4 sides cutout on top left and bottom right
+            {
+                ReplaceMapEntry(dest, 57);
+            }
             // 3 corners
+            else if ((sides & 87) == 87) // neighboured on all 4 sides cutout on top left, bottom left and bottom right
+            {
+                ReplaceMapEntry(dest, 58);
+            }
+            else if ((sides & 93) == 93) // neighboured on all 4 sides cutout on top left, bottom left and top right
+            {
+                ReplaceMapEntry(dest, 59);
+            }
+            else if ((sides & 117) == 117) // neighboured on all 4 sides cutout on top left, bottom right and top right
+            {
+                ReplaceMapEntry(dest, 60);
+            }
+            else if ((sides & 213) == 213) // neighboured on all 4 sides cutout on bottom left, bottom right and top right
+            {
+                ReplaceMapEntry(dest, 61);
+            }
             // 4 corners
             else if ((sides & 85) == 85) // neighboured on all 4 sides
             {
