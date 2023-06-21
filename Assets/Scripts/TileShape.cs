@@ -15,6 +15,7 @@ public class Side
 {
     public Face[] faces;
     public Vector3Int neighbourDirection;
+    public SideType sideType;
 }
 
 [Serializable]
@@ -32,4 +33,13 @@ public class Vertices
 {
     public Vector3 position;
     public Vector2 uv;
+}
+
+[Serializable]
+public enum SideType
+{
+    Empty,
+    Cube,
+    StairSide,
+    StairFront
 }

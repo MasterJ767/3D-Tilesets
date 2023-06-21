@@ -46,7 +46,7 @@ public class Segment : MonoBehaviour
                 Side side = tile.shape.sides[s];
 
                 Vector3Int neighbourPos = pos + side.neighbourDirection;
-                if (tiles.Contains(neighbourPos) || neighbourPos.y < 0) { continue; }
+                if (!RenderSide(pos, s, side.neighbourDirection)) { continue; }
 
                 for (int f = 0; f < side.faces.Length; ++f)
                 {
@@ -72,6 +72,7 @@ public class Segment : MonoBehaviour
         meshRenderer.materials = tile.materials;
 
         Mesh mesh = new Mesh();
+        mesh.name = gameObject.name;
         mesh.subMeshCount = 3;
         mesh.SetVertices(vertices.ToArray());
         mesh.SetTriangles(triangles[0].ToArray(), 0);
@@ -83,5 +84,28 @@ public class Segment : MonoBehaviour
 
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = meshFilter.mesh;
+    }
+
+    private bool RenderSide(Vector3Int current, int side, Vector3Int neighbourDirection)
+    {
+        Vector3Int neighbourPos = current + neighbourDirection;
+        if (neighbourPos.y < 0) { return false; }
+        if (tiles.Contains(neighbourPos)) { return tile.shape.sides[side].sideType != tile.shape.sides[GetOppositeSide(side)].sideType; }
+
+        Vector3 rayDir = (neighbourPos + new Vector3(0.5f, 0.5f, 0.5f)) - (current + new Vector3(0.5f, 0.5f, 0.5f));
+        if (Physics.Raycast(current + new Vector3(0.5f, 0.5f, 0.5f), rayDir, out RaycastHit hit, 1.01f))
+        {
+            Debug.Log(hit.collider.gameObject.name);
+            Segment other = hit.collider.gameObject.GetComponent<Segment>();
+            if (!other.tiles.Contains(neighbourPos)) { return true; }
+            return tile.shape.sides[side].sideType != other.tile.shape.sides[GetOppositeSide(side)].sideType;
+        }
+
+        return true;
+    }
+
+    private int GetOppositeSide(int side)
+    {
+        return (side & 1) == 0 ? side + 1 : side - 1;
     }
 }
