@@ -24,6 +24,11 @@ public class Segment : MonoBehaviour
         tiles.Add(pos);
     }
 
+    public bool ContainsTile(Vector3Int pos)
+    {
+        return tiles.Contains(pos);
+    }
+
     public void Render()
     {
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
