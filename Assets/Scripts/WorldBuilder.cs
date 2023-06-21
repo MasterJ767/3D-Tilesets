@@ -77,7 +77,8 @@ public class WorldBuilder : MonoBehaviour
         {
             Vector3Int hitPos = new Vector3Int(Mathf.FloorToInt(hit.point.x), Mathf.FloorToInt(hit.point.y), Mathf.FloorToInt(hit.point.z));
             Vector3Int placePos;
-            bool found = hit.collider.gameObject.GetComponent<Segment>().ContainsTile(hitPos);
+            Segment segment = hit.collider.gameObject.GetComponent<Segment>();
+            bool found = segment.ContainsTile(hitPos);
             if ((found && buildMode) || (!found && !buildMode))
             {
                 Vector3 direction = hit.point - (hitPos + new Vector3(0.5f, 0.5f, 0.5f));
@@ -90,8 +91,15 @@ public class WorldBuilder : MonoBehaviour
                 placePos = hitPos;
             }
 
-            TileShape shape = buildMode ? tiles[activeTile].shape : cursor.cursorShape;
-            RenderCursor(shape, placePos);
+            if (placePos.y < 0 || (!buildMode && !segment.ContainsTile(placePos)))
+            {
+                meshFilter.mesh = new Mesh();
+            }
+            else
+            {
+                TileShape shape = buildMode ? tiles[activeTile].shape : cursor.cursorShape;
+                RenderCursor(shape, placePos, buildMode ? 1.0f : 1.1f);
+            }            
         }
         else
         {
@@ -130,11 +138,12 @@ public class WorldBuilder : MonoBehaviour
         meshRenderer.material = buildMode ? cursor.buildMaterial : cursor.destroyMaterial;
     }
 
-    private void RenderCursor(TileShape shape, Vector3Int pos)
+    private void RenderCursor(TileShape shape, Vector3Int pos, float size = 1)
     {
         List<Vector3> vertices = new List<Vector3>();
         List<int> triangles = new List<int>();
         int vertexIndex = 0;
+        float offset = 0.5f - (size * 0.5f);
 
         for (int s = 0; s < shape.sides.Length; ++s)
         {
@@ -146,7 +155,7 @@ public class WorldBuilder : MonoBehaviour
 
                 foreach (Vertices vertex in face.vertices)
                 {
-                    vertices.Add(pos + vertex.position);
+                    vertices.Add(pos + (vertex.position * size) + new Vector3(offset, offset, offset));
                 }
                 
                 foreach (int triangle in face.triangles)
