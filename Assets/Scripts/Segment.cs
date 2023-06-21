@@ -29,6 +29,11 @@ public class Segment : MonoBehaviour
         return tiles.Contains(pos);
     }
 
+    public void RemoveTile(Vector3Int pos)
+    {
+        tiles.Remove(pos);
+    }
+
     public void Render()
     {
         MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();

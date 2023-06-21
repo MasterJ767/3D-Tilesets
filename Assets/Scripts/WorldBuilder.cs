@@ -81,9 +81,11 @@ public class WorldBuilder : MonoBehaviour
             bool found = segment.ContainsTile(hitPos);
             if ((found && buildMode) || (!found && !buildMode))
             {
-                Vector3 direction = hit.point - (hitPos + new Vector3(0.5f, 0.5f, 0.5f));
+                Vector3 direction = (hit.point - (hitPos + new Vector3(0.5f, 0.5f, 0.5f))).normalized;
                 float max = Mathf.Max(Mathf.Abs(direction.x), Mathf.Max(Mathf.Abs(direction.y), Mathf.Abs(direction.z)));
                 Vector3Int normalized = new Vector3Int(Mathf.RoundToInt(direction.x / max), Mathf.RoundToInt(direction.y / max), Mathf.RoundToInt(direction.z / max));
+                normalized.y = normalized.y == 1 && (normalized.y == normalized.x || normalized.y == normalized.z) ? 0 : normalized.y;
+                normalized.z = normalized.z == 1 && (normalized.z == normalized.x) ? 0 : normalized.z;
                 placePos = hitPos + normalized;
             }
             else
@@ -99,6 +101,11 @@ public class WorldBuilder : MonoBehaviour
             {
                 TileShape shape = buildMode ? tiles[activeTile].shape : cursor.cursorShape;
                 RenderCursor(shape, placePos, buildMode ? 1.0f : 1.1f);
+                if (Input.GetMouseButtonDown(0)) 
+                {
+                    if (buildMode) { AddTileToWorld(placePos); }
+                    else { RemoveTileFromWorld(segment, placePos); }
+                }
             }            
         }
         else
@@ -174,6 +181,19 @@ public class WorldBuilder : MonoBehaviour
         mesh.Optimize();
 
         meshFilter.mesh = mesh;
+    }
+
+    private void AddTileToWorld(Vector3Int pos)
+    {
+        Segment segment = transform.Find(tiles[activeTile].tileName).GetComponent<Segment>();
+        segment.AddTile(pos);
+        segment.Render();
+    }
+
+    private void RemoveTileFromWorld(Segment segment, Vector3Int pos)
+    {
+        segment.RemoveTile(pos);
+        segment.Render();
     }
 }
 
