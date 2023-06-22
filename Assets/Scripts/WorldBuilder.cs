@@ -74,12 +74,14 @@ public class WorldBuilder : MonoBehaviour
     private void Update()
     {
         if (Input.GetMouseButtonDown(1)) { SwapMode(); }
-        if (Input.GetKeyDown(KeyCode.Q)) { ShiftTile(-1); }
-        if (Input.GetKeyDown(KeyCode.E)) { ShiftTile(1); }
-        if (Input.GetKeyDown(KeyCode.Z)) { ShiftTileShape(-1); }
-        if (Input.GetKeyDown(KeyCode.X)) { ShiftTileShape(1); }
-        if (Input.GetKeyDown(KeyCode.R)) { Rotate(90); }
-        if (Input.GetKeyDown(KeyCode.F)) { Rotate(-90); }
+        if (buildMode){
+            if (Input.GetKeyDown(KeyCode.Q)) { ShiftTile(-1); }
+            if (Input.GetKeyDown(KeyCode.E)) { ShiftTile(1); }
+            if (Input.GetKeyDown(KeyCode.Z)) { ShiftTileShape(-1); }
+            if (Input.GetKeyDown(KeyCode.X)) { ShiftTileShape(1); }
+            if (Input.GetKeyDown(KeyCode.R)) { Rotate(90); }
+            if (Input.GetKeyDown(KeyCode.F)) { Rotate(-90); }
+        }
 
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
         {
@@ -127,9 +129,17 @@ public class WorldBuilder : MonoBehaviour
         GUIStyle style = new GUIStyle();
         style.fontSize = 24;
 
-        GUILayout.Label("TILE", style);
-        GUILayout.Label(tiles[activeTile].tileName, style);
-        GUILayout.Label(tiles[activeTile].shapes[activeTileShape].shapeName, style);
+        if (buildMode) 
+        {
+            GUILayout.Label("BUILD", style);
+            GUILayout.Label(tiles[activeTile].tileName, style);
+            GUILayout.Label(tiles[activeTile].shapes[activeTileShape].shapeName, style);
+            GUILayout.Label(rotation.ToString(), style);
+        }
+        else
+        {
+            GUILayout.Label("REMOVE", style);
+        }
     }
 
     private Segment CreateSegment(TileInstance tile)
