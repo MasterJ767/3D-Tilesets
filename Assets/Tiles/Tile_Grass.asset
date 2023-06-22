@@ -16,4 +16,5 @@ MonoBehaviour:
   materials:
   - {fileID: 2100000, guid: 5bef1d5c0f6ab9e498710bebf9f22a54, type: 2}
   - {fileID: 2100000, guid: 36a220e82b65a5c40a081d8d2cd0625a, type: 2}
-  shape: {fileID: 11400000, guid: dd63503030df84848804403444f567a9, type: 2}
+  shapes:
+  - {fileID: 11400000, guid: dd63503030df84848804403444f567a9, type: 2}

@@ -7,5 +7,5 @@ public class TileInstance : ScriptableObject
 {
     public string tileName;
     public Material[] materials;
-    public TileShape shape;
+    public TileShape[] shapes;
 }

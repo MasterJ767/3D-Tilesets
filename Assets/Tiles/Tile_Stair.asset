@@ -15,4 +15,5 @@ MonoBehaviour:
   tileName: Stairs
   materials:
   - {fileID: 2100000, guid: 168922bb18a866b4fa0537fbeff5b5a2, type: 2}
-  shape: {fileID: 11400000, guid: c1354d9cbdae3dc43aec570e96f4b93b, type: 2}
+  shapes:
+  - {fileID: 11400000, guid: c1354d9cbdae3dc43aec570e96f4b93b, type: 2}

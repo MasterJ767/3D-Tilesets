@@ -19,6 +19,8 @@ public class WorldBuilder : MonoBehaviour
     private Camera mainCamera;
     private bool buildMode = true;
     private int activeTile = 0;
+    private int activeTileShape = 0;
+    private int rotation = 0;
 
     private void Awake()
     {
@@ -37,19 +39,19 @@ public class WorldBuilder : MonoBehaviour
         {
             for (int j = 0; j < baseDimensions.y; ++j)
             {
-                segment.AddTile(new Vector3Int(i, 0, j));
+                segment.AddTile(new Vector3Int(i, 0, j), activeTileShape, rotation);
             }
         }
-        segment.AddTile(new Vector3Int(0, 1, 5));
-        segment.AddTile(new Vector3Int(4, 1, 5));
-        segment.AddTile(new Vector3Int(5, 1, 5));
-        segment.AddTile(new Vector3Int(6, 1, 5));
-        segment.AddTile(new Vector3Int(7, 1, 5));
+        segment.AddTile(new Vector3Int(0, 1, 5), activeTileShape, rotation);
+        segment.AddTile(new Vector3Int(4, 1, 5), activeTileShape, rotation);
+        segment.AddTile(new Vector3Int(5, 1, 5), activeTileShape, rotation);
+        segment.AddTile(new Vector3Int(6, 1, 5), activeTileShape, rotation);
+        segment.AddTile(new Vector3Int(7, 1, 5), activeTileShape, rotation);
         for (int k = 0; k < 15; ++k)
         {
             for (int l = 6; l < 22; ++l)
             {
-                segment.AddTile(new Vector3Int(k, 1, l));
+                segment.AddTile(new Vector3Int(k, 1, l), activeTileShape, rotation);
             }
         }
 
@@ -57,14 +59,14 @@ public class WorldBuilder : MonoBehaviour
         {
             for (int n = 11; n < 19; ++n)
             {
-                segment.AddTile(new Vector3Int(m, 2, n));
+                segment.AddTile(new Vector3Int(m, 2, n), activeTileShape, rotation);
             }
         }
 
         Segment segment2 = CreateSegment(tiles[1]);
-        segment2.AddTile(new Vector3Int(1, 1, 5));
-        segment2.AddTile(new Vector3Int(2, 1, 5));
-        segment2.AddTile(new Vector3Int(3, 1, 5));
+        segment2.AddTile(new Vector3Int(1, 1, 5), activeTileShape, rotation);
+        segment2.AddTile(new Vector3Int(2, 1, 5), activeTileShape, rotation);
+        segment2.AddTile(new Vector3Int(3, 1, 5), activeTileShape, rotation);
 
         RenderSegments();
     }
@@ -72,6 +74,12 @@ public class WorldBuilder : MonoBehaviour
     private void Update()
     {
         if (Input.GetMouseButtonDown(1)) { SwapMode(); }
+        if (Input.GetKeyDown(KeyCode.Q)) { ShiftTile(-1); }
+        if (Input.GetKeyDown(KeyCode.E)) { ShiftTile(1); }
+        if (Input.GetKeyDown(KeyCode.Z)) { ShiftTileShape(-1); }
+        if (Input.GetKeyDown(KeyCode.X)) { ShiftTileShape(1); }
+        if (Input.GetKeyDown(KeyCode.R)) { Rotate(90); }
+        if (Input.GetKeyDown(KeyCode.F)) { Rotate(-90); }
 
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
         {
@@ -99,7 +107,7 @@ public class WorldBuilder : MonoBehaviour
             }
             else
             {
-                TileShape shape = buildMode ? tiles[activeTile].shape : cursor.cursorShape;
+                TileShape shape = buildMode ? tiles[activeTile].shapes[activeTileShape] : cursor.cursorShape;
                 RenderCursor(shape, placePos, buildMode ? 1.0f : 1.1f);
                 if (Input.GetMouseButtonDown(0)) 
                 {
@@ -112,6 +120,16 @@ public class WorldBuilder : MonoBehaviour
         {
             meshFilter.mesh = new Mesh();
         }
+    }
+
+    private void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 24;
+
+        GUILayout.Label("TILE", style);
+        GUILayout.Label(tiles[activeTile].tileName, style);
+        GUILayout.Label(tiles[activeTile].shapes[activeTileShape].shapeName, style);
     }
 
     private Segment CreateSegment(TileInstance tile)
@@ -162,7 +180,11 @@ public class WorldBuilder : MonoBehaviour
 
                 foreach (Vertices vertex in face.vertices)
                 {
-                    vertices.Add(pos + (vertex.position * size) + new Vector3(offset, offset, offset));
+                    Vector3 centre = new Vector3(0.5f, 0.5f, 0.5f);
+                    Vector3 vertexPos = (vertex.position * size) + new Vector3(offset, offset, offset);
+                    Vector3 direction = vertexPos - centre;
+                    direction = Quaternion.Euler(0, rotation, 0) * direction;
+                    vertices.Add(pos + (direction + centre));
                 }
                 
                 foreach (int triangle in face.triangles)
@@ -186,7 +208,7 @@ public class WorldBuilder : MonoBehaviour
     private void AddTileToWorld(Vector3Int pos)
     {
         Segment segment = transform.Find(tiles[activeTile].tileName).GetComponent<Segment>();
-        segment.AddTile(pos);
+        segment.AddTile(pos, activeTileShape, rotation);
         segment.Render();
     }
 
@@ -194,6 +216,27 @@ public class WorldBuilder : MonoBehaviour
     {
         segment.RemoveTile(pos);
         segment.Render();
+    }
+
+    private void ShiftTile(int s)
+    {
+        int newIndex = activeTile + s;
+        activeTile = newIndex >= tiles.Length ? newIndex % tiles.Length : newIndex < 0 ? tiles.Length + newIndex : newIndex; 
+        activeTileShape = 0;
+        rotation = 0;
+    }
+
+    private void ShiftTileShape(int s)
+    {
+        int newIndex = activeTileShape + s;
+        activeTileShape = newIndex >= tiles[activeTile].shapes.Length ? newIndex % tiles[activeTile].shapes.Length : newIndex < 0 ? tiles[activeTile].shapes.Length + newIndex : newIndex; 
+        rotation = 0;
+    }
+
+    private void Rotate(int r)
+    {
+        int newRotation = rotation + r;
+        rotation = newRotation > 180 ? newRotation - 360 : newRotation <= -180 ? newRotation + 360 : newRotation;
     }
 }
 

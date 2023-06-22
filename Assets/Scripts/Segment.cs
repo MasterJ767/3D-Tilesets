@@ -1,17 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Segment : MonoBehaviour
 {
-    private List<Vector3Int> tiles;
+    private Dictionary<Vector3Int, TileInfo> tiles;
     private TileInstance tile;
 
     public int Size => tiles.Count;
 
     private void Awake()
     {
-        tiles = new List<Vector3Int>();
+        tiles = new Dictionary<Vector3Int, TileInfo>();
     }
 
     public void Init(TileInstance tile)
@@ -19,14 +20,14 @@ public class Segment : MonoBehaviour
         this.tile = tile;
     }
 
-    public void AddTile(Vector3Int pos)
+    public void AddTile(Vector3Int pos, int shapeIndex, int rotation)
     {
-        tiles.Add(pos);
+        tiles.Add(pos, new TileInfo(shapeIndex, rotation));
     }
 
     public bool ContainsTile(Vector3Int pos)
     {
-        return tiles.Contains(pos);
+        return tiles.ContainsKey(pos);
     }
 
     public void RemoveTile(Vector3Int pos)
@@ -49,14 +50,13 @@ public class Segment : MonoBehaviour
         List<Vector2> uvs = new List<Vector2>();
         int vertexIndex = 0;
 
-        foreach (Vector3Int pos in tiles)
+        foreach (var pair in tiles)
         {
-            for (int s = 0; s < tile.shape.sides.Length; ++s)
+            for (int s = 0; s < tile.shapes[pair.Value.shapeIndex].sides.Length; ++s)
             {
-                Side side = tile.shape.sides[s];
+                Side side = tile.shapes[pair.Value.shapeIndex].sides[s];
 
-                Vector3Int neighbourPos = pos + side.neighbourDirection;
-                if (!RenderSide(pos, s, side.neighbourDirection)) { continue; }
+                if (!RenderSide(pair.Key, s, RotateVector(side.neighbourDirection, tiles[pair.Key].rotation))) { continue; }
 
                 for (int f = 0; f < side.faces.Length; ++f)
                 {
@@ -64,8 +64,11 @@ public class Segment : MonoBehaviour
 
                     foreach (Vertices vertex in face.vertices)
                     {
-                        vertices.Add(pos + vertex.position);
-                        normals.Add(face.normal);
+                        Vector3 centre = new Vector3(0.5f, 0.5f, 0.5f);
+                        Vector3 direction = vertex.position - centre;
+                        direction = Quaternion.Euler(0, tiles[pair.Key].rotation, 0) * direction;
+                        vertices.Add(pair.Key + (direction + centre));
+                        normals.Add(Quaternion.Euler(0, tiles[pair.Key].rotation, 0) * face.normal);
                         uvs.Add(vertex.uv);
                     }
                     
@@ -100,22 +103,91 @@ public class Segment : MonoBehaviour
     {
         Vector3Int neighbourPos = current + neighbourDirection;
         if (neighbourPos.y < 0) { return false; }
-        if (tiles.Contains(neighbourPos)) { return tile.shape.sides[side].sideType != tile.shape.sides[GetOppositeSide(side)].sideType; }
+        if (tiles.ContainsKey(neighbourPos)) { return CompareFaces(tile.shapes[tiles[current].shapeIndex], tiles[current].rotation, side, tile.shapes[tiles[neighbourPos].shapeIndex], tiles[neighbourPos].rotation); }
 
         Vector3 rayDir = (neighbourPos + new Vector3(0.5f, 0.5f, 0.5f)) - (current + new Vector3(0.5f, 0.5f, 0.5f));
         if (Physics.Raycast(current + new Vector3(0.5f, 0.5f, 0.5f), rayDir, out RaycastHit hit, 1.01f))
         {
-            Debug.Log(hit.collider.gameObject.name);
             Segment other = hit.collider.gameObject.GetComponent<Segment>();
-            if (!other.tiles.Contains(neighbourPos)) { return true; }
-            return tile.shape.sides[side].sideType != other.tile.shape.sides[GetOppositeSide(side)].sideType;
+            if (!other.tiles.ContainsKey(neighbourPos)) { return true; }
+            return CompareFaces(tile.shapes[tiles[current].shapeIndex], tiles[current].rotation, side, other.tile.shapes[other.tiles[neighbourPos].shapeIndex], other.tiles[neighbourPos].rotation);
         }
 
         return true;
     }
 
-    private int GetOppositeSide(int side)
+    private bool CompareFaces(TileShape currentShape, int currentRotation, int currentSide, TileShape neighbourShape, int neighbourRotation)
+    {   
+        int neighbourSide = GetSide(RotateVector(-RotateVector(currentShape.sides[currentSide].neighbourDirection, currentRotation), neighbourRotation + 360));
+        bool sameSide = currentShape.sides[currentSide].sideType == neighbourShape.sides[neighbourSide].sideType;
+        if (!sameSide) { return true; }
+        return FaceMatchCheck(currentShape.sides[currentSide].sideType, currentRotation, neighbourRotation);
+    }
+
+    private int GetSide(Vector3Int direction)
     {
-        return (side & 1) == 0 ? side + 1 : side - 1;
+        if (direction == Vector3Int.back) { return 0; }
+        if (direction == Vector3Int.forward) { return 1; }
+        if (direction == Vector3Int.left) { return 2; }
+        if (direction == Vector3Int.right) { return 3; }
+        if (direction == Vector3Int.down) { return 4; }
+        if (direction == Vector3Int.up) { return 5; }
+        Debug.LogError("Direction is not along cardinal axes, direction: " + direction);
+        return -1;
+    }
+
+    private Vector3Int RotateVector(Vector3Int start, int degree)
+    {
+        switch (degree)
+        {
+            case 0:
+            case 360:
+            case -360:
+                return start;
+            case 90:
+            case -270:
+            case 450:
+                return new Vector3Int(start.z, start.y, -start.x);
+            case 180:
+            case -180:
+            case 540:
+            case -540:
+                return new Vector3Int(-start.x, start.y, -start.z);
+            case -90:
+            case 270:
+            case -450:
+                return new Vector3Int(-start.z, start.y, start.x);
+            default:
+                Debug.LogError("Vector3Int was rotated off axes, angle: " + degree);
+                return Vector3Int.zero;
+        }
+    }
+
+    private bool FaceMatchCheck(SideType sideType, int currentRotation, int neighbourRotation)
+    {
+        bool sameRotation = currentRotation == neighbourRotation;
+        switch (sideType)
+        {
+            case SideType.Cube:
+                return false;
+            case SideType.StairSide:
+            case SideType.StairFront:
+                return !sameRotation;
+            default:
+                return false;
+        }
+    }
+}
+
+[Serializable]
+public class TileInfo
+{
+    public int shapeIndex;
+    public int rotation;
+
+    public TileInfo(int shapeIndex, int rotation)
+    {
+        this.shapeIndex = shapeIndex;
+        this.rotation = rotation;
     }
 }
