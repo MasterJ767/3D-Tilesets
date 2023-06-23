@@ -23,7 +23,7 @@ public class Face
 {
     public string direction;
     public int submesh;
-    public Vector3Int normal;
+    public Vector3 normal;
     public Vertices[] vertices;
     public int[] triangles;
 }
@@ -41,5 +41,8 @@ public enum SideType
     Empty,
     Cube,
     StairSide,
-    StairFront
+    StairFront,
+    CliffSide,
+    CliffSideSlope,
+    CliffFront
 }

@@ -52,11 +52,12 @@ public class Segment : MonoBehaviour
 
         foreach (var pair in tiles)
         {
+            int rotation = tiles[pair.Key].rotation;
             for (int s = 0; s < tile.shapes[pair.Value.shapeIndex].sides.Length; ++s)
             {
                 Side side = tile.shapes[pair.Value.shapeIndex].sides[s];
 
-                if (!RenderSide(pair.Key, s, RotateVector(side.neighbourDirection, tiles[pair.Key].rotation))) { continue; }
+                if (!RenderSide(pair.Key, s, RotateVector(side.neighbourDirection, rotation))) { continue; }
 
                 for (int f = 0; f < side.faces.Length; ++f)
                 {
@@ -66,10 +67,18 @@ public class Segment : MonoBehaviour
                     {
                         Vector3 centre = new Vector3(0.5f, 0.5f, 0.5f);
                         Vector3 direction = vertex.position - centre;
-                        direction = Quaternion.Euler(0, tiles[pair.Key].rotation, 0) * direction;
+                        direction = Quaternion.Euler(0, rotation, 0) * direction;
                         vertices.Add(pair.Key + (direction + centre));
-                        normals.Add(Quaternion.Euler(0, tiles[pair.Key].rotation, 0) * face.normal);
-                        uvs.Add(vertex.uv);
+                        normals.Add(Quaternion.Euler(0, rotation, 0) * face.normal);
+                        if (s == 4 || s == 5) {
+                            Vector3 uvDirection = new Vector3(vertex.uv.x, vertex.uv.y, 0) - centre;
+                            uvDirection = Quaternion.Euler(0, 0, rotation) * uvDirection;
+                            uvs.Add(new Vector2(uvDirection.x, uvDirection.y));
+                        }
+                        else
+                        {
+                            uvs.Add(vertex.uv);
+                        }
                     }
                     
                     foreach (int triangle in face.triangles)
@@ -119,6 +128,7 @@ public class Segment : MonoBehaviour
     private bool CompareFaces(TileShape currentShape, int currentRotation, int currentSide, TileShape neighbourShape, int neighbourRotation)
     {   
         int neighbourSide = GetSide(RotateVector(-RotateVector(currentShape.sides[currentSide].neighbourDirection, currentRotation), neighbourRotation + 360));
+        if (currentShape.sides[currentSide].sideType == SideType.CliffSide && neighbourShape.sides[neighbourSide].sideType == SideType.CliffSideSlope) { return false; }
         bool sameSide = currentShape.sides[currentSide].sideType == neighbourShape.sides[neighbourSide].sideType;
         if (!sameSide) { return true; }
         return FaceMatchCheck(currentShape.sides[currentSide].sideType, currentRotation, neighbourRotation);
@@ -169,9 +179,11 @@ public class Segment : MonoBehaviour
         switch (sideType)
         {
             case SideType.Cube:
+            case SideType.CliffSide:
                 return false;
             case SideType.StairSide:
             case SideType.StairFront:
+            case SideType.CliffSideSlope:
                 return !sameRotation;
             default:
                 return false;

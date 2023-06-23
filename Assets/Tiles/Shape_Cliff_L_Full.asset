@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 33d47c82d866fd44eb191ceb6b81e723, type: 3}
-  m_Name: Shape_Cliff_I
+  m_Name: Shape_Cliff_L_Full
   m_EditorClassIdentifier: 
-  shapeName: Cliff_I
+  shapeName: Cliff_L_Full
   sides:
   - faces:
-    - direction: FrontTop
+    - direction: FrontTop1
       submesh: 0
       normal: {x: 0, y: 0, z: -1}
       vertices:
@@ -23,9 +23,22 @@ MonoBehaviour:
         uv: {x: 0, y: 0.9}
       - position: {x: 0, y: 1, z: 0.5}
         uv: {x: 0, y: 1}
-      - position: {x: 1, y: 1, z: 0.5}
+      - position: {x: 0.5, y: 1, z: 0.5}
+        uv: {x: 0.5, y: 1}
+      - position: {x: 0.5, y: 0.9, z: 0.5}
+        uv: {x: 0.5, y: 0.9}
+      triangles: 000000000100000003000000030000000100000002000000
+    - direction: FrontTop2
+      submesh: 0
+      normal: {x: 0, y: 0, z: -1}
+      vertices:
+      - position: {x: 0.5, y: 0.9, z: 0}
+        uv: {x: 0.5, y: 0.9}
+      - position: {x: 0.5, y: 1, z: 0}
+        uv: {x: 0.5, y: 1}
+      - position: {x: 1, y: 1, z: 0}
         uv: {x: 1, y: 1}
-      - position: {x: 1, y: 0.9, z: 0.5}
+      - position: {x: 1, y: 0.9, z: 0}
         uv: {x: 1, y: 0.9}
       triangles: 000000000100000003000000030000000100000002000000
     - direction: Slope
@@ -36,13 +49,26 @@ MonoBehaviour:
         uv: {x: 0, y: 0}
       - position: {x: 0, y: 0.9, z: 0.4}
         uv: {x: 0, y: 0.9}
-      - position: {x: 1, y: 0.9, z: 0.4}
+      - position: {x: 0.4, y: 0.9, z: 0.4}
+        uv: {x: 0.4, y: 0.9}
+      triangles: 000000000100000002000000
+    - direction: Side
+      submesh: 1
+      normal: {x: 0, y: 0, z: -1}
+      vertices:
+      - position: {x: 0.4, y: 0, z: 0}
+        uv: {x: 0.4, y: 0}
+      - position: {x: 0.4, y: 0.9, z: 0}
+        uv: {x: 0.4, y: 0.9}
+      - position: {x: 1, y: 0.9, z: 0}
         uv: {x: 1, y: 0.9}
       - position: {x: 1, y: 0, z: 0}
         uv: {x: 1, y: 0}
-      triangles: 000000000100000003000000030000000100000002000000
+      - position: {x: 0, y: 0, z: 0}
+        uv: {x: 0, y: 0}
+      triangles: 000000000100000003000000030000000100000002000000040000000100000000000000
     neighbourDirection: {x: 0, y: 0, z: -1}
-    sideType: 6
+    sideType: 5
   - faces:
     - direction: BackTop
       submesh: 0
@@ -73,7 +99,7 @@ MonoBehaviour:
     neighbourDirection: {x: 0, y: 0, z: 1}
     sideType: 1
   - faces:
-    - direction: LeftTop
+    - direction: LeftTop1
       submesh: 0
       normal: {x: -1, y: 0, z: 0}
       vertices:
@@ -86,7 +112,20 @@ MonoBehaviour:
       - position: {x: 0, y: 0.9, z: 0.5}
         uv: {x: 0.5, y: 0.9}
       triangles: 000000000100000003000000030000000100000002000000
-    - direction: LeftBottom
+    - direction: LeftTop2
+      submesh: 0
+      normal: {x: -1, y: 0, z: 0}
+      vertices:
+      - position: {x: 0.5, y: 0.9, z: 0.5}
+        uv: {x: 0.5, y: 0.9}
+      - position: {x: 0.5, y: 1, z: 0.5}
+        uv: {x: 0.5, y: 1}
+      - position: {x: 0.5, y: 1, z: 0}
+        uv: {x: 1, y: 1}
+      - position: {x: 0.5, y: 0.9, z: 0}
+        uv: {x: 1, y: 0.9}
+      triangles: 000000000100000003000000030000000100000002000000
+    - direction: Side
       submesh: 1
       normal: {x: -1, y: 0, z: 0}
       vertices:
@@ -101,17 +140,28 @@ MonoBehaviour:
       - position: {x: 0, y: 0, z: 0}
         uv: {x: 1, y: 0}
       triangles: 000000000100000003000000030000000100000002000000030000000200000004000000
+    - direction: Slope
+      submesh: 1
+      normal: {x: -0.9, y: 0.4, z: 0}
+      vertices:
+      - position: {x: 0, y: 0, z: 0}
+        uv: {x: 1, y: 0}
+      - position: {x: 0.4, y: 0.9, z: 0.4}
+        uv: {x: 0.6, y: 0.9}
+      - position: {x: 0.4, y: 0.9, z: 0}
+        uv: {x: 1, y: 0.9}
+      triangles: 000000000100000002000000
     neighbourDirection: {x: -1, y: 0, z: 0}
-    sideType: 4
+    sideType: 5
   - faces:
     - direction: RightTop
       submesh: 0
       normal: {x: 1, y: 0, z: 0}
       vertices:
-      - position: {x: 1, y: 0.9, z: 0.5}
-        uv: {x: 0.5, y: 0.9}
-      - position: {x: 1, y: 1, z: 0.5}
-        uv: {x: 0.5, y: 1}
+      - position: {x: 1, y: 0.9, z: 0}
+        uv: {x: 0, y: 0.9}
+      - position: {x: 1, y: 1, z: 0}
+        uv: {x: 0, y: 1}
       - position: {x: 1, y: 1, z: 1}
         uv: {x: 1, y: 1}
       - position: {x: 1, y: 0.9, z: 1}
@@ -121,19 +171,17 @@ MonoBehaviour:
       submesh: 1
       normal: {x: 1, y: 0, z: 0}
       vertices:
-      - position: {x: 1, y: 0, z: 0.4}
-        uv: {x: 0.4, y: 0}
-      - position: {x: 1, y: 0.9, z: 0.4}
-        uv: {x: 0.4, y: 0.9}
+      - position: {x: 1, y: 0.9, z: 0}
+        uv: {x: 0, y: 0.9}
       - position: {x: 1, y: 0.9, z: 1}
         uv: {x: 1, y: 0.9}
       - position: {x: 1, y: 0, z: 1}
         uv: {x: 1, y: 0}
       - position: {x: 1, y: 0, z: 0}
         uv: {x: 0, y: 0}
-      triangles: 000000000100000003000000030000000100000002000000010000000000000004000000
+      triangles: 000000000100000003000000030000000100000002000000
     neighbourDirection: {x: 1, y: 0, z: 0}
-    sideType: 4
+    sideType: 1
   - faces:
     - direction: Bottom
       submesh: 1
@@ -165,6 +213,19 @@ MonoBehaviour:
         uv: {x: 1, y: 0.5}
       triangles: 000000000100000003000000030000000100000002000000
     - direction: Top2
+      submesh: 0
+      normal: {x: 0, y: 1, z: 0}
+      vertices:
+      - position: {x: 0.5, y: 1, z: 0}
+        uv: {x: 0.5, y: 0}
+      - position: {x: 0.5, y: 1, z: 0.5}
+        uv: {x: 0.5, y: 0.5}
+      - position: {x: 1, y: 1, z: 0.5}
+        uv: {x: 1, y: 0.5}
+      - position: {x: 1, y: 1, z: 0}
+        uv: {x: 1, y: 0}
+      triangles: 000000000100000003000000030000000100000002000000
+    - direction: Top3
       submesh: 1
       normal: {x: 0, y: 1, z: 0}
       vertices:
@@ -172,10 +233,23 @@ MonoBehaviour:
         uv: {x: 0, y: 0.4}
       - position: {x: 0, y: 0.9, z: 0.5}
         uv: {x: 0, y: 0.5}
-      - position: {x: 1, y: 0.9, z: 0.5}
-        uv: {x: 1, y: 0.5}
-      - position: {x: 1, y: 0.9, z: 0.4}
-        uv: {x: 1, y: 0.4}
+      - position: {x: 0.5, y: 0.9, z: 0.5}
+        uv: {x: 0.5, y: 0.5}
+      - position: {x: 0.5, y: 0.9, z: 0.4}
+        uv: {x: 0.5, y: 0.4}
+      triangles: 000000000100000003000000030000000100000002000000
+    - direction: Top4
+      submesh: 1
+      normal: {x: 0, y: 1, z: 0}
+      vertices:
+      - position: {x: 0.4, y: 0.9, z: 0}
+        uv: {x: 0.4, y: 0}
+      - position: {x: 0.4, y: 0.9, z: 0.4}
+        uv: {x: 0.4, y: 0.4}
+      - position: {x: 0.5, y: 0.9, z: 0.4}
+        uv: {x: 0.5, y: 0.4}
+      - position: {x: 0.5, y: 0.9, z: 0}
+        uv: {x: 0.5, y: 0}
       triangles: 000000000100000003000000030000000100000002000000
     neighbourDirection: {x: 0, y: 1, z: 0}
     sideType: 1

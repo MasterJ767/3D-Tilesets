@@ -33,7 +33,9 @@ public class WorldBuilder : MonoBehaviour
 
     private void Start()
     {
-        Segment segment = CreateSegment(tiles[0]);
+        CreateSegments();
+        
+        Segment segment = transform.Find(tiles[0].tileName).GetComponent<Segment>();
         
         for (int i = 0; i < baseDimensions.x; ++i)
         {
@@ -63,7 +65,7 @@ public class WorldBuilder : MonoBehaviour
             }
         }
 
-        Segment segment2 = CreateSegment(tiles[1]);
+        Segment segment2 = transform.Find(tiles[2].tileName).GetComponent<Segment>();
         segment2.AddTile(new Vector3Int(1, 1, 5), activeTileShape, rotation);
         segment2.AddTile(new Vector3Int(2, 1, 5), activeTileShape, rotation);
         segment2.AddTile(new Vector3Int(3, 1, 5), activeTileShape, rotation);
@@ -142,7 +144,15 @@ public class WorldBuilder : MonoBehaviour
         }
     }
 
-    private Segment CreateSegment(TileInstance tile)
+    private void CreateSegments()
+    {
+        foreach (TileInstance tile in tiles)
+        {
+            CreateSegment(tile);
+        }
+    }
+
+    private void CreateSegment(TileInstance tile)
     {
         GameObject newSegment = new GameObject(tile.tileName);
         newSegment.transform.position = new Vector3(0, 0, 0);
@@ -155,8 +165,6 @@ public class WorldBuilder : MonoBehaviour
 
         segment.Init(tile);
         segments.Add(segment);
-
-        return segment;
     }
 
     private void RenderSegments()
@@ -218,6 +226,7 @@ public class WorldBuilder : MonoBehaviour
     private void AddTileToWorld(Vector3Int pos)
     {
         Segment segment = transform.Find(tiles[activeTile].tileName).GetComponent<Segment>();
+        if (segment.ContainsTile(pos)) { return; }
         segment.AddTile(pos, activeTileShape, rotation);
         segment.Render();
     }
