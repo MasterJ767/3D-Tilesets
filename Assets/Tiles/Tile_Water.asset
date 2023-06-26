@@ -17,3 +17,4 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 74b4bfb22f887734b98a10146fa2786c, type: 2}
   shapes:
   - {fileID: 11400000, guid: 0df4dad9370016844bd9ce7ec55d8d4a, type: 2}
+  rotateXZface: 1
