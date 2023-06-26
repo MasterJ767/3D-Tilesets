@@ -68,17 +68,24 @@ public class Segment : MonoBehaviour
                         Vector3 centre = new Vector3(0.5f, 0.5f, 0.5f);
                         Vector3 direction = vertex.position - centre;
                         direction = Quaternion.Euler(0, rotation, 0) * direction;
-                        vertices.Add(pair.Key + (direction + centre));
-                        normals.Add(Quaternion.Euler(0, rotation, 0) * face.normal);
-                        if (s == 4 || s == 5) {
+                        Vector3 v = pair.Key + (direction + centre);
+                        vertices.Add(v);
+
+                        Vector3 n = Quaternion.Euler(0, rotation, 0) * face.normal;
+                        normals.Add(n);
+
+                        Vector2 u;
+                        if (tile.rotateXZface && (s == 4 || s == 5))
+                        {
                             Vector3 uvDirection = new Vector3(vertex.uv.x, vertex.uv.y, 0) - centre;
                             uvDirection = Quaternion.Euler(0, 0, rotation) * uvDirection;
-                            uvs.Add(new Vector2(uvDirection.x, uvDirection.y));
+                            u = new Vector2(uvDirection.x, uvDirection.y);
                         }
                         else
                         {
-                            uvs.Add(vertex.uv);
+                            u = vertex.uv;
                         }
+                        uvs.Add(u);
                     }
                     
                     foreach (int triangle in face.triangles)

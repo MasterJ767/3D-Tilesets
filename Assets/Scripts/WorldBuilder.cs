@@ -44,11 +44,11 @@ public class WorldBuilder : MonoBehaviour
                 segment.AddTile(new Vector3Int(i, 0, j), activeTileShape, rotation);
             }
         }
-        segment.AddTile(new Vector3Int(0, 1, 5), activeTileShape, rotation);
-        segment.AddTile(new Vector3Int(4, 1, 5), activeTileShape, rotation);
-        segment.AddTile(new Vector3Int(5, 1, 5), activeTileShape, rotation);
-        segment.AddTile(new Vector3Int(6, 1, 5), activeTileShape, rotation);
-        segment.AddTile(new Vector3Int(7, 1, 5), activeTileShape, rotation);
+        segment.AddTile(new Vector3Int(0, 1, 5), 1, rotation);
+        segment.AddTile(new Vector3Int(4, 1, 5), 1, rotation);
+        segment.AddTile(new Vector3Int(5, 1, 5), 1, rotation);
+        segment.AddTile(new Vector3Int(6, 1, 5), 1, rotation);
+        segment.AddTile(new Vector3Int(7, 1, 5), 1, rotation);
         for (int k = 0; k < 15; ++k)
         {
             for (int l = 6; l < 22; ++l)
@@ -66,9 +66,9 @@ public class WorldBuilder : MonoBehaviour
         }
 
         Segment segment2 = transform.Find(tiles[2].tileName).GetComponent<Segment>();
-        segment2.AddTile(new Vector3Int(1, 1, 5), activeTileShape, rotation);
-        segment2.AddTile(new Vector3Int(2, 1, 5), activeTileShape, rotation);
-        segment2.AddTile(new Vector3Int(3, 1, 5), activeTileShape, rotation);
+        segment2.AddTile(new Vector3Int(1, 1, 5), 1, rotation);
+        segment2.AddTile(new Vector3Int(2, 1, 5), 0, rotation);
+        segment2.AddTile(new Vector3Int(3, 1, 5), 2, rotation);
 
         RenderSegments();
     }
@@ -82,7 +82,7 @@ public class WorldBuilder : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Z)) { ShiftTileShape(-1); }
             if (Input.GetKeyDown(KeyCode.X)) { ShiftTileShape(1); }
             if (Input.GetKeyDown(KeyCode.R)) { Rotate(90); }
-            if (Input.GetKeyDown(KeyCode.F)) { Rotate(-90); }
+            if (Input.GetKeyDown(KeyCode.T)) { Rotate(-90); }
         }
 
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
@@ -202,7 +202,8 @@ public class WorldBuilder : MonoBehaviour
                     Vector3 vertexPos = (vertex.position * size) + new Vector3(offset, offset, offset);
                     Vector3 direction = vertexPos - centre;
                     direction = Quaternion.Euler(0, rotation, 0) * direction;
-                    vertices.Add(pos + (direction + centre));
+                    Vector3 v = pos + (direction + centre);
+                    vertices.Add(v);
                 }
                 
                 foreach (int triangle in face.triangles)
@@ -249,7 +250,6 @@ public class WorldBuilder : MonoBehaviour
     {
         int newIndex = activeTileShape + s;
         activeTileShape = newIndex >= tiles[activeTile].shapes.Length ? newIndex % tiles[activeTile].shapes.Length : newIndex < 0 ? tiles[activeTile].shapes.Length + newIndex : newIndex; 
-        rotation = 0;
     }
 
     private void Rotate(int r)

@@ -8,4 +8,5 @@ public class TileInstance : ScriptableObject
     public string tileName;
     public Material[] materials;
     public TileShape[] shapes;
+    public bool rotateXZface;
 }
