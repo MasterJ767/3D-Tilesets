@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d016f6bb5f1f54498e9610ea61e9567, type: 3}
+  m_Name: PKMN_Ponyta
+  m_EditorClassIdentifier: 
+  pokemonName: Ponyta
+  description: If you've been accepted by Ponyta, its burning mane is mysteriously
+    no longer hot to the touch.
+  type1: 3
+  type2: 0
+  baseHP: 50
+  baseAttack: 85
+  baseDefence: 55
+  baseSpecialAttack: 65
+  baseSpecialDefence: 65
+  baseSpeed: 90
