@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Tile_Sand
   m_EditorClassIdentifier: 
   tileName: Sand
+  tileType: 4
   materials:
   - {fileID: 2100000, guid: f635fa5c8a8a35449853b05344573b8c, type: 2}
   - {fileID: 2100000, guid: 36a220e82b65a5c40a081d8d2cd0625a, type: 2}

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Tile_Stair
   m_EditorClassIdentifier: 
   tileName: Stairs
+  tileType: 5
   materials:
   - {fileID: 2100000, guid: 168922bb18a866b4fa0537fbeff5b5a2, type: 2}
   - {fileID: 2100000, guid: b9ef7e024148c224395b4ba74edf7465, type: 2}
@@ -20,3 +21,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c1354d9cbdae3dc43aec570e96f4b93b, type: 2}
   - {fileID: 11400000, guid: 20124124113a6e849bcf18246679cfde, type: 2}
   - {fileID: 11400000, guid: cb234e4b3682c1644b8f12753b7a2ab3, type: 2}
+  rotateXZface: 0

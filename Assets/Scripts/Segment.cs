@@ -7,6 +7,8 @@ public class Segment : MonoBehaviour
 {
     private Dictionary<Vector3Int, TileInfo> tiles;
     private TileInstance tile;
+    private WorldBuilder worldBuilder;
+    private Vector2Int dimensions;
 
     public int Size => tiles.Count;
 
@@ -15,14 +17,40 @@ public class Segment : MonoBehaviour
         tiles = new Dictionary<Vector3Int, TileInfo>();
     }
 
-    public void Init(TileInstance tile)
+    public void Init(TileInstance tile, WorldBuilder worldBuilder, Vector2Int dimensions)
     {
         this.tile = tile;
+        this.worldBuilder = worldBuilder;
+        this.dimensions = dimensions;
     }
 
-    public void AddTile(Vector3Int pos, int shapeIndex, int rotation)
+    public void AddTile(Vector3Int pos)
     {
-        tiles.Add(pos, new TileInfo(shapeIndex, rotation));
+        switch (tile.tileType)
+        {
+            case SmartShape.Basic:
+                tiles.Add(pos, new TileInfo(0, 0));
+                break;
+            case SmartShape.Line:
+                AddLineTile(pos, false);
+                break;
+            case SmartShape.Rect:
+                AddRectTile(pos, false);
+                break;
+            case SmartShape.SmartLine:
+                AddLineTile(pos, true);
+                break;
+            case SmartShape.SmartRect:
+                AddRectTile(pos, true);
+                break;
+            case SmartShape.DirectionalLine:
+                AddLineTile(pos, false);
+                break;
+            default:
+                tiles.Add(pos, new TileInfo(0, 0));
+                break;
+        }
+        
     }
 
     public bool ContainsTile(Vector3Int pos)
@@ -33,6 +61,331 @@ public class Segment : MonoBehaviour
     public void RemoveTile(Vector3Int pos)
     {
         tiles.Remove(pos);
+    }
+
+    private void AddLineTile(Vector3Int pos, bool smart)
+    {
+        byte sides = 0;
+        sides += (byte)(GetNeighbour(pos + new Vector3Int(0, 0, 1), smart) > 0 ? 1 : 0); // top 
+        sides += (byte)(GetNeighbour(pos + new Vector3Int(1, 0, 0), smart) > 0 ? 1 << 1 : 0); // right 
+        sides += (byte)(GetNeighbour(pos + new Vector3Int(0, 0, -1), smart) > 0 ? 1 << 2 : 0); // bottom 
+        sides += (byte)(GetNeighbour(pos + new Vector3Int(-1, 0, 0), smart) > 0 ? 1 << 3 : 0); // left 
+
+        if ((sides & 5) == 5)
+        {
+            tiles.Add(pos, new TileInfo(0, -90));
+        }
+        else if ((sides & 10) == 10)
+        {
+            tiles.Add(pos, new TileInfo(0, 0));
+        }
+        else if ((sides & 1) == 1)
+        {
+            tiles.Add(pos, new TileInfo(1, -90));
+        }
+        else if ((sides & 2) == 2)
+        {
+            tiles.Add(pos, new TileInfo(1, 0));
+        }
+        else if ((sides & 4) == 4)
+        {
+            tiles.Add(pos, new TileInfo(2, -90));
+        }
+        else if ((sides & 8) == 8)
+        {
+            tiles.Add(pos, new TileInfo(2, 0));
+        }
+        else
+        {
+            tiles.Add(pos, new TileInfo(0, 0));
+        }
+
+        if ((sides & 1) == 1)
+        {
+            UpdateLineTile(pos + new Vector3Int(0, 0, 1), smart);
+        }
+        if ((sides & 2) == 2)
+        {
+            UpdateLineTile(pos + new Vector3Int(1, 0, 0), smart);
+        }
+        if ((sides & 4) == 4)
+        {
+            UpdateLineTile(pos + new Vector3Int(0, 0, -1), smart);
+        }
+        if ((sides & 8) == 8)
+        {
+            UpdateLineTile(pos + new Vector3Int(-1, 0, 0), smart);
+        }
+    }
+    
+    private void UpdateLineTile(Vector3Int pos, bool smart)
+    {
+        if (smart && !tiles.ContainsKey(pos)) 
+        { 
+            for (int i = 0; i < worldBuilder.tiles.Length; ++i)
+            {
+                if (worldBuilder.tiles[i].tileType == tile.tileType && worldBuilder.transform.GetChild(i).GetComponent<Segment>().ContainsTile(pos))
+                {
+                    worldBuilder.transform.GetChild(i).GetComponent<Segment>().UpdateRectTile(pos, smart);
+                    break;
+                }
+            } 
+        }
+        else
+        {
+            byte sides = 0;
+            sides += (byte)(GetNeighbour(pos + new Vector3Int(0, 0, 1), smart) > 0 ? 1 : 0); // top 
+            sides += (byte)(GetNeighbour(pos + new Vector3Int(1, 0, 0), smart) > 0 ? 1 << 1 : 0); // right 
+            sides += (byte)(GetNeighbour(pos + new Vector3Int(0, 0, -1), smart) > 0 ? 1 << 2 : 0); // bottom 
+            sides += (byte)(GetNeighbour(pos + new Vector3Int(-1, 0, 0), smart) > 0 ? 1 << 3 : 0); // left 
+
+            if ((sides & 5) == 5)
+            {
+                tiles[pos] = new TileInfo(0, -90);
+            }
+            else if ((sides & 10) == 10)
+            {
+                tiles[pos] = new TileInfo(0, 0);
+            }
+            else if ((sides & 1) == 1)
+            {
+                tiles[pos] = new TileInfo(1, -90);
+            }
+            else if ((sides & 2) == 2)
+            {
+                tiles[pos] = new TileInfo(1, 0);
+            }
+            else if ((sides & 4) == 4)
+            {
+                tiles[pos] = new TileInfo(2, -90);
+            }
+            else if ((sides & 8) == 8)
+            {
+                tiles[pos] = new TileInfo(2, 0);
+            }
+            else
+            {
+                tiles[pos] = new TileInfo(0, 0);
+            }
+        }
+    }
+
+    private void AddRectTile(Vector3Int pos, bool smart)
+    {
+        int sides = 0;
+        sides += GetNeighbour(pos + new Vector3Int(0, 0, 1), smart) > 0 ? 1 : 0; // top 
+        sides += GetNeighbour(pos + new Vector3Int(1, 0, 1), smart) > 0 ? 1 << 1 : 0; // top right 
+        sides += GetNeighbour(pos + new Vector3Int(1, 0, 0), smart) > 0 ? 1 << 2 : 0; // right
+        sides += GetNeighbour(pos + new Vector3Int(1, 0, -1), smart) > 0 ? 1 << 3 : 0; // bottom right 
+        sides += GetNeighbour(pos + new Vector3Int(0, 0, -1), smart) > 0 ? 1 << 4 : 0; // bottom
+        sides += GetNeighbour(pos + new Vector3Int(-1, 0, -1), smart) > 0 ? 1 << 5 : 0; // bottom left
+        sides += GetNeighbour(pos + new Vector3Int(-1, 0, 0), smart) > 0 ? 1 << 6 : 0; // left
+        sides += GetNeighbour(pos + new Vector3Int(-1, 0, 1), smart) > 0 ? 1 << 7 : 0; // top left 
+        sides += GetNeighbour(pos + new Vector3Int(0, 1, 0), smart) > 0 ? 1 << 8 : 0; // above
+        sides += GetNeighbour(pos + new Vector3Int(0, -1, 0), smart) > 0 ? 1 << 9 : 0; // below 
+
+        if ((sides & 256) == 256)
+        {
+            tiles.Add(pos, new TileInfo(0, 0));
+        }
+        else if ((sides & 255) == 255)
+        {
+            tiles.Add(pos, new TileInfo(0, 0));
+        }
+        else if ((sides & 253) == 253)
+        {
+            tiles.Add(pos, new TileInfo(3, 180));
+        }
+        else if ((sides & 247) == 247)
+        {
+            tiles.Add(pos, new TileInfo(3, -90));
+        }
+        else if ((sides & 223) == 223)
+        {
+            tiles.Add(pos, new TileInfo(3, 0));
+        }
+        else if ((sides & 127) == 127)
+        {
+            tiles.Add(pos, new TileInfo(3, 90));
+        }
+        else if ((sides & 84) == 84)
+        {
+            tiles.Add(pos, new TileInfo(1, 180));
+        }
+        else if ((sides & 81) == 81)
+        {
+            tiles.Add(pos, new TileInfo(1, -90));
+        }
+        else if ((sides & 69) == 69)
+        {
+            tiles.Add(pos, new TileInfo(1, 0));
+        }
+        else if ((sides & 21) == 21)
+        {
+            tiles.Add(pos, new TileInfo(1, 90));
+        }
+        else if ((sides & 80) == 80)
+        {
+            tiles.Add(pos, new TileInfo(2, 180));
+        }
+        else if ((sides & 65) == 65)
+        {
+            tiles.Add(pos, new TileInfo(2, -90));
+        }
+        else if ((sides & 5) == 5)
+        {
+            tiles.Add(pos, new TileInfo(2, 0));
+        }
+        else if ((sides & 20) == 20)
+        {
+            tiles.Add(pos, new TileInfo(2, 90));
+        }
+        else 
+        {
+            tiles.Add(pos, new TileInfo(0, 0));
+        }
+
+        if ((sides & 1) == 1)
+        {
+            UpdateRectTile(pos + new Vector3Int(0, 0, 1), smart);
+        }
+        if ((sides & 2) == 2)
+        {
+            UpdateRectTile(pos + new Vector3Int(1, 0, 1), smart);
+        }
+        if ((sides & 4) == 4)
+        {
+            UpdateRectTile(pos + new Vector3Int(1, 0, 0), smart);
+        }
+        if ((sides & 8) == 8)
+        {
+            UpdateRectTile(pos + new Vector3Int(1, 0, -1), smart);
+        }
+        if ((sides & 16) == 16)
+        {
+            UpdateRectTile(pos + new Vector3Int(0, 0, -1), smart);
+        }
+        if ((sides & 32) == 32)
+        {
+            UpdateRectTile(pos + new Vector3Int(-1, 0, -1), smart);
+        }
+        if ((sides & 64) == 64)
+        {
+            UpdateRectTile(pos + new Vector3Int(-1, 0, 0), smart);
+        }
+        if ((sides & 128) == 128)
+        {
+            UpdateRectTile(pos + new Vector3Int(-1, 0, 1), smart);
+        }
+        if ((sides & 512) == 512)
+        {
+            UpdateRectTile(pos + new Vector3Int(0, -1, 0), smart);
+        }
+    }
+
+    private void UpdateRectTile(Vector3Int pos, bool smart)
+    {
+        if (smart && !tiles.ContainsKey(pos)) 
+        { 
+            for (int i = 0; i < worldBuilder.tiles.Length; ++i)
+            {
+                if (worldBuilder.tiles[i].tileType == tile.tileType && worldBuilder.transform.GetChild(i).GetComponent<Segment>().ContainsTile(pos))
+                {
+                    worldBuilder.transform.GetChild(i).GetComponent<Segment>().UpdateRectTile(pos, smart);
+                    break;
+                }
+            } 
+        }
+        else
+        {
+            int sides = 0;
+            sides += GetNeighbour(pos + new Vector3Int(0, 0, 1), smart) > 0 ? 1 : 0; // top 
+            sides += GetNeighbour(pos + new Vector3Int(1, 0, 1), smart) > 0 ? 1 << 1 : 0; // top right 
+            sides += GetNeighbour(pos + new Vector3Int(1, 0, 0), smart) > 0 ? 1 << 2 : 0; // right
+            sides += GetNeighbour(pos + new Vector3Int(1, 0, -1), smart) > 0 ? 1 << 3 : 0; // bottom right 
+            sides += GetNeighbour(pos + new Vector3Int(0, 0, -1), smart) > 0 ? 1 << 4 : 0; // bottom
+            sides += GetNeighbour(pos + new Vector3Int(-1, 0, -1), smart) > 0 ? 1 << 5 : 0; // bottom left
+            sides += GetNeighbour(pos + new Vector3Int(-1, 0, 0), smart) > 0 ? 1 << 6 : 0; // left
+            sides += GetNeighbour(pos + new Vector3Int(-1, 0, 1), smart) > 0 ? 1 << 7 : 0; // top left 
+            sides += GetNeighbour(pos + new Vector3Int(0, 1, 0), smart) > 0 ? 1 << 8 : 0; // above
+            sides += GetNeighbour(pos + new Vector3Int(0, -1, 0), smart) > 0 ? 1 << 9 : 0; // below 
+
+            if ((sides & 256) == 256)
+            {
+                tiles[pos] = new TileInfo(0, 0);
+            }
+            else if ((sides & 255) == 255)
+            {
+                tiles[pos] = new TileInfo(0, 0);
+            }
+            else if ((sides & 253) == 253)
+            {
+                tiles[pos] = new TileInfo(3, 180);
+            }
+            else if ((sides & 247) == 247)
+            {
+                tiles[pos] = new TileInfo(3, -90);
+            }
+            else if ((sides & 223) == 223)
+            {
+                tiles[pos] = new TileInfo(3, 0);
+            }
+            else if ((sides & 127) == 127)
+            {
+                tiles[pos] = new TileInfo(3, 90);
+            }
+            else if ((sides & 84) == 84)
+            {
+                tiles[pos] = new TileInfo(1, 180);
+            }
+            else if ((sides & 81) == 81)
+            {
+                tiles[pos] = new TileInfo(1, -90);
+            }
+            else if ((sides & 69) == 69)
+            {
+                tiles[pos] = new TileInfo(1, 0);
+            }
+            else if ((sides & 21) == 21)
+            {
+                tiles[pos] = new TileInfo(1, 90);
+            }
+            else if ((sides & 80) == 80)
+            {
+                tiles[pos] = new TileInfo(2, 180);
+            }
+            else if ((sides & 65) == 65)
+            {
+                tiles[pos] = new TileInfo(2, -90);
+            }
+            else if ((sides & 5) == 5)
+            {
+                tiles[pos] = new TileInfo(2, 0);
+            }
+            else if ((sides & 20) == 20)
+            {
+                tiles[pos] = new TileInfo(2, 90);
+            }
+            else 
+            {
+                tiles[pos] = new TileInfo(0, 0);
+            }
+        }
+    }
+
+    private int GetNeighbour(Vector3Int pos, bool smart)
+    {
+        if (pos.x < 0 || pos.x >= dimensions.x || pos.z < 0 || pos.z >= dimensions.y || pos.y < 0 || pos.y > 16) { return 3; }
+        if (tiles.ContainsKey(pos)) { return 1; }
+        if (!smart) { return 0; }
+        for (int i = 0; i < worldBuilder.tiles.Length; ++i)
+        {
+            if (worldBuilder.tiles[i].tileType == tile.tileType && worldBuilder.transform.GetChild(i).GetComponent<Segment>().ContainsTile(pos))
+            {
+                return 2;
+            }
+        }
+        return 0;
     }
 
     public void Render()
@@ -120,13 +473,14 @@ public class Segment : MonoBehaviour
         Vector3Int neighbourPos = current + neighbourDirection;
         if (neighbourPos.y < 0) { return false; }
         if (tiles.ContainsKey(neighbourPos)) { return CompareFaces(tile.shapes[tiles[current].shapeIndex], tiles[current].rotation, side, tile.shapes[tiles[neighbourPos].shapeIndex], tiles[neighbourPos].rotation); }
-
-        Vector3 rayDir = (neighbourPos + new Vector3(0.5f, 0.5f, 0.5f)) - (current + new Vector3(0.5f, 0.5f, 0.5f));
-        if (Physics.Raycast(current + new Vector3(0.5f, 0.5f, 0.5f), rayDir, out RaycastHit hit, 1.01f))
+        
+        for (int i = 0; i < worldBuilder.tiles.Length; ++i)
         {
-            Segment other = hit.collider.gameObject.GetComponent<Segment>();
-            if (!other.tiles.ContainsKey(neighbourPos)) { return true; }
-            return CompareFaces(tile.shapes[tiles[current].shapeIndex], tiles[current].rotation, side, other.tile.shapes[other.tiles[neighbourPos].shapeIndex], other.tiles[neighbourPos].rotation);
+            Segment segment = worldBuilder.transform.GetChild(i).GetComponent<Segment>();
+            if (segment.ContainsTile(neighbourPos))
+            {
+                return CompareFaces(tile.shapes[tiles[current].shapeIndex], tiles[current].rotation, side, segment.tile.shapes[segment.tiles[neighbourPos].shapeIndex], segment.tiles[neighbourPos].rotation);
+            }
         }
 
         return true;

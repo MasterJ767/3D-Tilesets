@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Tile_Grass
   m_EditorClassIdentifier: 
   tileName: Grass
+  tileType: 4
   materials:
   - {fileID: 2100000, guid: 5bef1d5c0f6ab9e498710bebf9f22a54, type: 2}
   - {fileID: 2100000, guid: 36a220e82b65a5c40a081d8d2cd0625a, type: 2}

@@ -19,5 +19,7 @@ public enum SmartShape
     Basic,
     Line,
     Rect,
-    Smart
+    SmartLine,
+    SmartRect,
+    DirectionalLine,
 }

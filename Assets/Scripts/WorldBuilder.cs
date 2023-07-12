@@ -8,7 +8,6 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 public class WorldBuilder : MonoBehaviour
 {
-    public Vector2Int baseDimensions;
     public TileInstance[] tiles;
     public Sprite[] maps;
     public BuilderCursor cursor;
@@ -43,10 +42,10 @@ public class WorldBuilder : MonoBehaviour
         if (buildMode){
             if (Input.GetKeyDown(KeyCode.Q)) { ShiftTile(-1); }
             if (Input.GetKeyDown(KeyCode.E)) { ShiftTile(1); }
-            if (Input.GetKeyDown(KeyCode.Z)) { ShiftTileShape(-1); }
-            if (Input.GetKeyDown(KeyCode.X)) { ShiftTileShape(1); }
-            if (Input.GetKeyDown(KeyCode.R)) { Rotate(90); }
-            if (Input.GetKeyDown(KeyCode.T)) { Rotate(-90); }
+            //if (Input.GetKeyDown(KeyCode.Z)) { ShiftTileShape(-1); }
+            //if (Input.GetKeyDown(KeyCode.X)) { ShiftTileShape(1); }
+            //if (Input.GetKeyDown(KeyCode.R)) { Rotate(90); }
+            //if (Input.GetKeyDown(KeyCode.T)) { Rotate(-90); }
         }
 
         if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
@@ -127,7 +126,7 @@ public class WorldBuilder : MonoBehaviour
         MeshRenderer segmentRenderer = newSegment.AddComponent<MeshRenderer>();
         newSegment.AddComponent<MeshCollider>();
 
-        segment.Init(tile);
+        segment.Init(tile, this, new Vector2Int((int)maps[0].pixelsPerUnit, (int)maps[0].pixelsPerUnit));
     }
 
     private void PopulateSegments()
@@ -145,7 +144,7 @@ public class WorldBuilder : MonoBehaviour
                     if (v == 1f) { continue; }
                     int y = Mathf.RoundToInt((1f - v) * 16f) - 1;
                     while (y >= 0) {
-                        segment.AddTile(new Vector3Int(x, y, z), 0, 0);
+                        segment.AddTile(new Vector3Int(x, y, z));
                         y--;
                     }
                 }
@@ -214,7 +213,7 @@ public class WorldBuilder : MonoBehaviour
     {
         Segment segment = transform.Find(tiles[activeTile].tileName).GetComponent<Segment>();
         if (segment.ContainsTile(pos)) { return; }
-        segment.AddTile(pos, activeTileShape, rotation);
+        segment.AddTile(pos);
         segment.Render();
     }
 
