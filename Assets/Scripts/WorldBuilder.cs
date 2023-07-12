@@ -10,10 +10,10 @@ public class WorldBuilder : MonoBehaviour
 {
     public Vector2Int baseDimensions;
     public TileInstance[] tiles;
+    public Sprite[] maps;
     public BuilderCursor cursor;
     
     //private static readonly int segmentLimit = 4096;
-    private List<Segment> segments;
     private MeshFilter meshFilter;
     private MeshRenderer meshRenderer;
     private Camera mainCamera;
@@ -24,7 +24,6 @@ public class WorldBuilder : MonoBehaviour
 
     private void Awake()
     {
-        segments = new List<Segment>();
         meshFilter = GetComponent<MeshFilter>();
         meshRenderer = GetComponent<MeshRenderer>();
         meshRenderer.material = cursor.buildMaterial;
@@ -34,43 +33,8 @@ public class WorldBuilder : MonoBehaviour
     private void Start()
     {
         CreateSegments();
-        
-        Segment segment = transform.Find(tiles[0].tileName).GetComponent<Segment>();
-        
-        for (int i = 0; i < baseDimensions.x; ++i)
-        {
-            for (int j = 0; j < baseDimensions.y; ++j)
-            {
-                segment.AddTile(new Vector3Int(i, 0, j), activeTileShape, rotation);
-            }
-        }
-        segment.AddTile(new Vector3Int(0, 1, 5), 1, rotation);
-        segment.AddTile(new Vector3Int(4, 1, 5), 1, rotation);
-        segment.AddTile(new Vector3Int(5, 1, 5), 1, rotation);
-        segment.AddTile(new Vector3Int(6, 1, 5), 1, rotation);
-        segment.AddTile(new Vector3Int(7, 1, 5), 1, rotation);
-        for (int k = 0; k < 15; ++k)
-        {
-            for (int l = 6; l < 22; ++l)
-            {
-                segment.AddTile(new Vector3Int(k, 1, l), activeTileShape, rotation);
-            }
-        }
-
-        for (int m = 0; m < 10; ++m)
-        {
-            for (int n = 11; n < 19; ++n)
-            {
-                segment.AddTile(new Vector3Int(m, 2, n), activeTileShape, rotation);
-            }
-        }
-
-        Segment segment2 = transform.Find(tiles[2].tileName).GetComponent<Segment>();
-        segment2.AddTile(new Vector3Int(1, 1, 5), 1, rotation);
-        segment2.AddTile(new Vector3Int(2, 1, 5), 0, rotation);
-        segment2.AddTile(new Vector3Int(3, 1, 5), 2, rotation);
-
-        RenderSegments();
+        PopulateSegments();
+        RenderSegments();        
     }
 
     private void Update()
@@ -164,14 +128,36 @@ public class WorldBuilder : MonoBehaviour
         newSegment.AddComponent<MeshCollider>();
 
         segment.Init(tile);
-        segments.Add(segment);
+    }
+
+    private void PopulateSegments()
+    {
+        for (int i = 0; i < maps.Length; ++i)
+        {
+            if (maps[i] == null) { continue; }
+            Segment segment = transform.Find(tiles[i].tileName).GetComponent<Segment>();
+            
+            for (int x = 0; x < maps[i].rect.width; ++x)
+            {
+                for (int z = 0; z < maps[i].rect.width; ++z)
+                {
+                    float v = maps[i].texture.GetPixel(x, z).r;
+                    if (v == 1f) { continue; }
+                    int y = Mathf.RoundToInt((1f - v) * 16f) - 1;
+                    while (y >= 0) {
+                        segment.AddTile(new Vector3Int(x, y, z), 0, 0);
+                        y--;
+                    }
+                }
+            }
+        }
     }
 
     private void RenderSegments()
     {
-        foreach (Segment segment in segments)
+        foreach (Transform child in transform)
         {
-            segment.Render();
+            child.GetComponent<Segment>().Render();
         }
     }
 

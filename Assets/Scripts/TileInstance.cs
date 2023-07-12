@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,17 @@ using UnityEngine;
 public class TileInstance : ScriptableObject
 {
     public string tileName;
+    public SmartShape tileType;
     public Material[] materials;
     public TileShape[] shapes;
     public bool rotateXZface;
+}
+
+[Serializable]
+public enum SmartShape
+{
+    Basic,
+    Line,
+    Rect,
+    Smart
 }

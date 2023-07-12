@@ -838,6 +838,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Test Terrain
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 08d0c265c7dc52c429e1fc804e1f5aec, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 08d0c265c7dc52c429e1fc804e1f5aec, type: 3}
 --- !u!1 &956256482 stripped
@@ -921,6 +925,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: f521f75023ba43645a0b58b53adbda8a, type: 3}
       propertyPath: m_Name
       value: Tree (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f521f75023ba43645a0b58b53adbda8a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f521f75023ba43645a0b58b53adbda8a, type: 3}

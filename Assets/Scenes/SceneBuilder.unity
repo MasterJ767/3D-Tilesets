@@ -160,6 +160,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 05ad3627280fe98499bca7110942968a, type: 2}
   - {fileID: 11400000, guid: 26c651146894f54458a666b40dc0cb6a, type: 2}
   - {fileID: 11400000, guid: 4765bb6c6c95859419af92da4b4b3e68, type: 2}
+  maps:
+  - {fileID: 21300000, guid: a294cb425ec343d488019bbf83aba3b1, type: 3}
+  - {fileID: 21300000, guid: 5ec86f3bf51add548b0779b3b581bb0f, type: 3}
+  - {fileID: 21300000, guid: 7760604e0927938458cfb6c3c08246c1, type: 3}
+  - {fileID: 21300000, guid: 7760604e0927938458cfb6c3c08246c1, type: 3}
   cursor:
     buildMaterial: {fileID: 2100000, guid: 3f87c93def0405647a6451b3a17c11d5, type: 2}
     destroyMaterial: {fileID: 2100000, guid: 17515c873579a8448915b5f1addcbd55, type: 2}
