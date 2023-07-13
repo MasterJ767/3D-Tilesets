@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Version1 {
 public class SceneBuilder : MonoBehaviour
 {
     public GameObject emptyMesh;
@@ -768,4 +769,5 @@ public class SceneBuilder : MonoBehaviour
         emptyMesh.GetComponent<MeshFilter>().mesh = mesh;
         emptyMesh.GetComponent<MeshCollider>().sharedMesh = mesh;
     }
+}
 }

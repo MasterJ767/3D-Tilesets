@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Pokemon {
 public class Chunk : MonoBehaviour
 {
     public Tileset tileset;
@@ -15,4 +16,5 @@ public struct Tileset {
     public Transform edge_under;
     public Transform corner;
     public Transform corner_under;
+}
 }

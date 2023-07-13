@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Version2
+{
 [ExecuteInEditMode]
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -78,4 +80,5 @@ public class TileViewer : MonoBehaviour
 
         meshFilter.sharedMesh = mesh;
     }
+}
 }

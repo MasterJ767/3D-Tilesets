@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Version2 
+{
 [CreateAssetMenu(fileName = "Shape_", menuName = "ScriptableObject/TileShape", order = 0)]
 public class TileShape : ScriptableObject
 {
@@ -45,4 +47,5 @@ public enum SideType
     CliffSide,
     CliffSideSlope,
     CliffFront
+}
 }

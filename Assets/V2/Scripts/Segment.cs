@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Version2
+{
 public class Segment : MonoBehaviour
 {
     private Dictionary<Vector3Int, TileInfo> tiles;
@@ -563,4 +565,5 @@ public class TileInfo
         this.shapeIndex = shapeIndex;
         this.rotation = rotation;
     }
+}
 }

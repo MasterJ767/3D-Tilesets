@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+namespace Version2
+{
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
 public class WorldBuilder : MonoBehaviour
@@ -250,4 +252,5 @@ public class BuilderCursor
     public Material buildMaterial;
     public Material destroyMaterial;
     public TileShape cursorShape;
+}
 }

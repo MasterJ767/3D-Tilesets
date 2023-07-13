@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Version2
+{
 [CreateAssetMenu(fileName = "Tile_", menuName = "ScriptableObject/TileInstance", order = 1)]
 public class TileInstance : ScriptableObject
 {
@@ -22,4 +24,5 @@ public enum SmartShape
     SmartLine,
     SmartRect,
     DirectionalLine,
+}
 }

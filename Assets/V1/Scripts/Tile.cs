@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace Version1 {
 [CreateAssetMenu(fileName = "Tile_", menuName = "ScriptableObject/V1/TerrainTile")]
 public class Tile : ScriptableObject
 {
@@ -30,4 +31,5 @@ public enum TileType
     Simple,
     Line,
     Smart
+}
 }
