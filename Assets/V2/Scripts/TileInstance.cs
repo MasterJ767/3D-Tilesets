@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Version2
 {
-[CreateAssetMenu(fileName = "Tile_", menuName = "ScriptableObject/TileInstance", order = 1)]
+[CreateAssetMenu(fileName = "Tile_", menuName = "ScriptableObject/V2/TileInstance", order = 4)]
 public class TileInstance : ScriptableObject
 {
     public string tileName;

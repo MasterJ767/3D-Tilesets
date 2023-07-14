@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Pokemon {
-[CreateAssetMenu(fileName = "PKMN_", menuName = "ScriptableObjects/Pokemon", order = 1)]
+[CreateAssetMenu(fileName = "PKMN_", menuName = "ScriptableObject/V0/Pokemon", order = 1)]
 public class PokemonBase : ScriptableObject
 {
     public string pokemonName;

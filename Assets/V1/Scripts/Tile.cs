@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Version1 {
-[CreateAssetMenu(fileName = "Tile_", menuName = "ScriptableObject/V1/TerrainTile")]
+[CreateAssetMenu(fileName = "Tile_", menuName = "ScriptableObject/V1/TerrainTile", order = 2)]
 public class Tile : ScriptableObject
 {
     public string tileID;
