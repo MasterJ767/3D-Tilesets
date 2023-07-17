@@ -48,7 +48,7 @@ namespace Version3
             newChunk.transform.parent = transform;
 
             Chunk chunk = newChunk.AddComponent<Chunk>();
-            chunk.Initialise(chunkPos, this, chunkData.maps);
+            chunk.Initialise(chunkPos, this, chunkWidth, chunkHeight, chunkData.maps);
 
             chunkMap.Add(chunkPos, chunk);
         }
@@ -59,7 +59,7 @@ namespace Version3
             {
                 for (int i = 0; i < tileData.Length; ++i)
                 {
-                    chunk.Value.CreateTileMesh(i, tileData[i], chunkWidth, chunkHeight);
+                    chunk.Value.CreateTileMesh(i, tileData[i]);
                 }
             }
         }
@@ -70,6 +70,15 @@ namespace Version3
             {
                 chunk.Value.RenderTiles();
             }
+        }
+
+        public Chunk GetChunk(Vector3Int pos)
+        {
+            if (chunkMap.ContainsKey(pos))
+            {
+                return chunkMap[pos];
+            }
+            return null;
         }
     }
 }

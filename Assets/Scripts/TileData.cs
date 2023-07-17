@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,23 @@ namespace Version3
     public class TileData : ScriptableObject
     {
         public string tileName;
-        public Mesh[] meshes;
+        public TileCategory category;
+        public MeshData[] meshData;
         public Material[] materials;
+    }
+
+    [Serializable]
+    public enum TileCategory
+    {
+        Terrain,
+        Stair,
+        Fluid
+    }
+
+    [Serializable]
+    public struct MeshData
+    {
+        public Mesh mesh;
+        [Range(0, 2)] public int[] submeshIndices;
     }
 }
