@@ -65,12 +65,17 @@ namespace Version3
             Vector3Int neighbourGlobalPos = new Vector3Int(chunkPos.x + neighbourPos.x, chunkPos.y + neighbourPos.y, chunkPos.z + neighbourPos.z);
             Vector3Int neighbourChunkPos = new Vector3Int(Mathf.FloorToInt(neighbourGlobalPos.x / (float)chunkWidth) * chunkWidth, Mathf.FloorToInt(neighbourGlobalPos.y / (float)chunkHeight) * chunkHeight, Mathf.FloorToInt(neighbourGlobalPos.z / (float)chunkWidth) * chunkWidth);
             Chunk neighbourChunk = terrainBuilder.GetChunk(neighbourChunkPos);
+            Vector3Int neighbourLocalPos = neighbourGlobalPos - neighbourChunkPos;
             if (neighbourChunk == null) { return true; }
+            return GetNeighbour(neighbourLocalPos, neighbourChunk, index, category);
+        }
 
-            for (int i = 0; i < meshes.Length; ++i)
+        public bool GetNeighbour(Vector3Int neighbourPos, Chunk chunk, int index, TileCategory category)
+        {
+            for (int i = 0; i < chunk.meshes.Length; ++i)
             {
-                if (i == index || meshes[i].GetTileCategory() != category) { continue; }
-                if (meshes[i].GetTile(neighbourGlobalPos - neighbourChunkPos).present) { return true; };
+                if (chunk.meshes[i] == null || i == index || chunk.meshes[i].GetTileCategory() != category) { continue; }
+                if (chunk.meshes[i].GetTile(neighbourPos).present) { return true; };
             }
             return false;
         }
@@ -78,14 +83,19 @@ namespace Version3
         public void UpdateNeighbourTile(Vector3Int neighbourPos, int index, TileCategory category)
         {
             Vector3Int neighbourGlobalPos = new Vector3Int(chunkPos.x + neighbourPos.x, chunkPos.y + neighbourPos.y, chunkPos.z + neighbourPos.z);
-            Vector3Int neighbourChunkPos = new Vector3Int((int)(neighbourGlobalPos.x / chunkWidth) * chunkWidth, (int)(neighbourGlobalPos.y / chunkHeight) * chunkHeight, (int)(neighbourGlobalPos.z / chunkWidth) * chunkWidth);
+            Vector3Int neighbourChunkPos = new Vector3Int(Mathf.FloorToInt(neighbourGlobalPos.x / (float)chunkWidth) * chunkWidth, Mathf.FloorToInt(neighbourGlobalPos.y / (float)chunkHeight) * chunkHeight, Mathf.FloorToInt(neighbourGlobalPos.z / (float)chunkWidth) * chunkWidth);
             Chunk neighbourChunk = terrainBuilder.GetChunk(neighbourChunkPos);
             Vector3Int neighbourLocalPos = neighbourGlobalPos - neighbourChunkPos;
             if (neighbourChunk == null) { return; }
-            for (int i = 0; i < meshes.Length; ++i)
+            UpdateNeighbour(neighbourLocalPos, neighbourChunk, index, category);
+        }
+
+        public void UpdateNeighbour(Vector3Int neighbourPos, Chunk chunk, int index, TileCategory category)
+        {
+            for (int i = 0; i < chunk.meshes.Length; ++i)
             {
-                if (i == index || meshes[i].GetTileCategory() != category) { continue; }
-                if (meshes[i].GetTile(neighbourLocalPos).present) { meshes[i].UpdateTile(neighbourLocalPos); };
+                if (chunk.meshes[i] == null || i == index || chunk.meshes[i].GetTileCategory() != category) { continue; }
+                if (chunk.meshes[i].GetTile(neighbourPos).present) { chunk.meshes[i].UpdateTileExternal(neighbourPos); };
             }
         }
     }

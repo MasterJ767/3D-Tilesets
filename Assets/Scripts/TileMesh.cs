@@ -56,7 +56,7 @@ namespace Version3
             if ((sides & 512) == 512) { UpdateTile(pos + new Vector3Int(0, -1, 0)); }
         }
 
-        public void UpdateTile(Vector3Int pos)
+        private void UpdateTile(Vector3Int pos)
         {
             if (pos.x < 0 || pos.x >= width || pos.y < 0 || pos.y >= height || pos.z < 0 || pos.z >= width)
             {
@@ -70,6 +70,20 @@ namespace Version3
             {
                 bool result = CompareChange(sides, i.Item1, pos, i.Item2, i.Item3);
                 if (result) { return; }
+            }
+        }
+
+        public void UpdateTileExternal(Vector3Int pos)
+        {
+            if (tileMap[pos.x, pos.y, pos.z].present)
+            {
+                int sides = DetermineNeighbours(pos);
+
+                foreach (Tuple<int, int, int> i in Iterator.iter)
+                {
+                    bool result = CompareChange(sides, i.Item1, pos, i.Item2, i.Item3);
+                    if (result) { return; }
+                }
             }
         }
 

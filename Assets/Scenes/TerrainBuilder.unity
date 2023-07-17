@@ -226,6 +226,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData:
   - {fileID: 11400000, guid: 31f67de84413a5140ba3c9470dd6d6a4, type: 2}
+  - {fileID: 11400000, guid: 0bd00c3bb2c79c44aac57c6059598682, type: 2}
   chunkData:
   - {fileID: 11400000, guid: 044a8f0d58ccc204582869088bef139a, type: 2}
 --- !u!1 &1697894447
