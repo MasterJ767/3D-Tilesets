@@ -72,10 +72,25 @@ namespace Version3
             return sides;
         }
 
+        private Tuple<int, int, int>[] GetIterator()
+        {
+            switch (tile.category)
+            {
+                case TileCategory.Terrain:
+                    return Iterator.terrain;
+                case TileCategory.Fluid:
+                    return Iterator.fluid;
+                default:
+                    return Iterator.basic;
+            }
+        }
+
         public void UpdateTile(Vector3Int pos)
         {
             int sides = DetermineNeighbours(pos);
-            foreach (Tuple<int, int, int> i in Iterator.smartIter)
+            Tuple<int, int, int>[] iter = GetIterator();
+
+            foreach (Tuple<int, int, int> i in iter)
             {
                 bool result = CompareChange(sides, i.Item1, pos, i.Item2, i.Item3);
                 if (result) { return; }
@@ -213,89 +228,98 @@ namespace Version3
 
     public static class Iterator
     {
-        public static readonly Tuple<int, int, int>[] smartIter = new Tuple<int, int, int>[]{
-                // Has tile above
-                new Tuple<int, int, int>(341, -1, 0), // F R B L U
-                new Tuple<int, int, int>(325, 8, 0), // L F R U
-                new Tuple<int, int, int>(277, 8, 90), // F R B U
-                new Tuple<int, int, int>(340, 8, 180), // R B L U
-                new Tuple<int, int, int>(337, 8, 270), // B L F U
-                new Tuple<int, int, int>(261, 4, 0), // F R U
-                new Tuple<int, int, int>(276, 4, 90), // R B U
-                new Tuple<int, int, int>(336, 4, 180), // B L U
-                new Tuple<int, int, int>(321, 4, 270), // L F U
-                new Tuple<int, int, int>(257, 2, 0), // F U
-                new Tuple<int, int, int>(260, 2, 90), // R U
-                new Tuple<int, int, int>(272, 2, 180), // B U
-                new Tuple<int, int, int>(320, 2, 270), // L U
-                new Tuple<int, int, int>(256, 0, 0), // U
+        public static readonly Tuple<int, int, int>[] basic = new Tuple<int, int, int>[]{
+            new Tuple<int, int, int>(0, 0, 0)
+        };
 
-                // 8 horizontal adjacent
-                new Tuple<int, int, int>(255, 19, 0), // All Horiz
+        public static readonly Tuple<int, int, int>[] terrain = new Tuple<int, int, int>[]{
+            // Has tile above
+            new Tuple<int, int, int>(341, -1, 0), // F R B L U
+            new Tuple<int, int, int>(325, 8, 0), // L F R U
+            new Tuple<int, int, int>(277, 8, 90), // F R B U
+            new Tuple<int, int, int>(340, 8, 180), // R B L U
+            new Tuple<int, int, int>(337, 8, 270), // B L F U
+            new Tuple<int, int, int>(261, 4, 0), // F R U
+            new Tuple<int, int, int>(276, 4, 90), // R B U
+            new Tuple<int, int, int>(336, 4, 180), // B L U
+            new Tuple<int, int, int>(321, 4, 270), // L F U
+            new Tuple<int, int, int>(257, 2, 0), // F U
+            new Tuple<int, int, int>(260, 2, 90), // R U
+            new Tuple<int, int, int>(272, 2, 180), // B U
+            new Tuple<int, int, int>(320, 2, 270), // L U
+            new Tuple<int, int, int>(256, 0, 0), // U
 
-                // 7 horizontal adjacent
-                new Tuple<int, int, int>(253, 18, 0), // All Horiz except FR
-                new Tuple<int, int, int>(247, 18, 90), // All Horiz except FL
-                new Tuple<int, int, int>(223, 18, 180), // All Horiz except BL
-                new Tuple<int, int, int>(127, 18, 270), // All Horiz except BR
+            // 8 horizontal adjacent
+            new Tuple<int, int, int>(255, 19, 0), // All Horiz
 
-                // 6 horizontal adjacent
-                new Tuple<int, int, int>(245, 16, 0), // All Horiz except FR BR
-                new Tuple<int, int, int>(215, 16, 90), // All Horiz except BR BL
-                new Tuple<int, int, int>(91, 16, 180), // All Horiz except BL FL
-                new Tuple<int, int, int>(125, 16, 270), // All Horiz except FL FR
-                new Tuple<int, int, int>(221, 17, 0), // All Horiz except FR BL
-                new Tuple<int, int, int>(119, 17, 90), // All Horiz except FL BR
+            // 7 horizontal adjacent
+            new Tuple<int, int, int>(253, 18, 0), // All Horiz except FR
+            new Tuple<int, int, int>(247, 18, 90), // All Horiz except FL
+            new Tuple<int, int, int>(223, 18, 180), // All Horiz except BL
+            new Tuple<int, int, int>(127, 18, 270), // All Horiz except BR
 
-                // 5 horizontal adjacent
-                new Tuple<int, int, int>(117, 14, 0), 
-                new Tuple<int, int, int>(213, 14, 90), 
-                new Tuple<int, int, int>(87, 14, 180), 
-                new Tuple<int, int, int>(93, 14, 270),
-                new Tuple<int, int, int>(199, 15, 0), 
-                new Tuple<int, int, int>(31, 15, 90), 
-                new Tuple<int, int, int>(124, 15, 180), 
-                new Tuple<int, int, int>(241, 15, 270),
+            // 6 horizontal adjacent
+            new Tuple<int, int, int>(245, 16, 0), // All Horiz except FR BR
+            new Tuple<int, int, int>(215, 16, 90), // All Horiz except BR BL
+            new Tuple<int, int, int>(91, 16, 180), // All Horiz except BL FL
+            new Tuple<int, int, int>(125, 16, 270), // All Horiz except FL FR
+            new Tuple<int, int, int>(221, 17, 0), // All Horiz except FR BL
+            new Tuple<int, int, int>(119, 17, 90), // All Horiz except FL BR
 
-                // 4 horizontal adjacent
-                new Tuple<int, int, int>(197, 11, 0), 
-                new Tuple<int, int, int>(23, 11, 90), 
-                new Tuple<int, int, int>(92, 11, 180), 
-                new Tuple<int, int, int>(113, 11, 270), 
-                new Tuple<int, int, int>(71, 12, 0), 
-                new Tuple<int, int, int>(29, 12, 90), 
-                new Tuple<int, int, int>(116, 12, 180), 
-                new Tuple<int, int, int>(209, 12, 270), 
-                new Tuple<int, int, int>(85, 13, 0), // F R B L
+            // 5 horizontal adjacent
+            new Tuple<int, int, int>(117, 14, 0), 
+            new Tuple<int, int, int>(213, 14, 90), 
+            new Tuple<int, int, int>(87, 14, 180), 
+            new Tuple<int, int, int>(93, 14, 270),
+            new Tuple<int, int, int>(199, 15, 0), 
+            new Tuple<int, int, int>(31, 15, 90), 
+            new Tuple<int, int, int>(124, 15, 180), 
+            new Tuple<int, int, int>(241, 15, 270),
 
-                // 3 horizontal adjacent
-                new Tuple<int, int, int>(69, 9, 0), // L F R
-                new Tuple<int, int, int>(21, 9, 90), // F R B
-                new Tuple<int, int, int>(84, 9, 180), // R B L
-                new Tuple<int, int, int>(81, 9, 270), // B L F
-                new Tuple<int, int, int>(7, 10, 0), // F FR R
-                new Tuple<int, int, int>(28, 10, 90), // R BR B
-                new Tuple<int, int, int>(112, 10, 180), // B BL L
-                new Tuple<int, int, int>(193, 10, 270), // L FL F
+            // 4 horizontal adjacent
+            new Tuple<int, int, int>(197, 11, 0), 
+            new Tuple<int, int, int>(23, 11, 90), 
+            new Tuple<int, int, int>(92, 11, 180), 
+            new Tuple<int, int, int>(113, 11, 270), 
+            new Tuple<int, int, int>(71, 12, 0), 
+            new Tuple<int, int, int>(29, 12, 90), 
+            new Tuple<int, int, int>(116, 12, 180), 
+            new Tuple<int, int, int>(209, 12, 270), 
+            new Tuple<int, int, int>(85, 13, 0), // F R B L
 
-                // 2 horizontal adjacent
-                new Tuple<int, int, int>(5, 5, 0), // F R
-                new Tuple<int, int, int>(20, 5, 90), // R B
-                new Tuple<int, int, int>(80, 5, 180), // B L
-                new Tuple<int, int, int>(65, 5, 270), // L F
-                new Tuple<int, int, int>(273, 6, 0), // F B U
-                new Tuple<int, int, int>(324, 6, 90), // L R U
-                new Tuple<int, int, int>(17, 7, 0), // F B
-                new Tuple<int, int, int>(68, 7, 90), // L R
+            // 3 horizontal adjacent
+            new Tuple<int, int, int>(69, 9, 0), // L F R
+            new Tuple<int, int, int>(21, 9, 90), // F R B
+            new Tuple<int, int, int>(84, 9, 180), // R B L
+            new Tuple<int, int, int>(81, 9, 270), // B L F
+            new Tuple<int, int, int>(7, 10, 0), // F FR R
+            new Tuple<int, int, int>(28, 10, 90), // R BR B
+            new Tuple<int, int, int>(112, 10, 180), // B BL L
+            new Tuple<int, int, int>(193, 10, 270), // L FL F
 
-                // 1 Horizontal adjacent
-                new Tuple<int, int, int>(1, 3, 0), // F
-                new Tuple<int, int, int>(4, 3, 90), // R
-                new Tuple<int, int, int>(16, 3, 180), // B
-                new Tuple<int, int, int>(64, 3, 270), // L
+            // 2 horizontal adjacent
+            new Tuple<int, int, int>(5, 5, 0), // F R
+            new Tuple<int, int, int>(20, 5, 90), // R B
+            new Tuple<int, int, int>(80, 5, 180), // B L
+            new Tuple<int, int, int>(65, 5, 270), // L F
+            new Tuple<int, int, int>(273, 6, 0), // F B U
+            new Tuple<int, int, int>(324, 6, 90), // L R U
+            new Tuple<int, int, int>(17, 7, 0), // F B
+            new Tuple<int, int, int>(68, 7, 90), // L R
 
-                // 0 horizontal adjacent
-                new Tuple<int, int, int>(0, 1, 0), // None
-            };
+            // 1 Horizontal adjacent
+            new Tuple<int, int, int>(1, 3, 0), // F
+            new Tuple<int, int, int>(4, 3, 90), // R
+            new Tuple<int, int, int>(16, 3, 180), // B
+            new Tuple<int, int, int>(64, 3, 270), // L
+
+            // 0 horizontal adjacent
+            new Tuple<int, int, int>(0, 1, 0), // None
+        };
+
+        public static readonly Tuple<int, int, int>[] fluid = new Tuple<int, int, int>[]{
+            new Tuple<int, int, int>(256, -1, 0), // U
+            new Tuple<int, int, int>(0, 0, 0)
+        };
     }
 }

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileName: Grass
   category: 0
+  logic: 1
   meshData:
   - mesh: {fileID: 1206208024434927118, guid: e179536d93dbd6540bdbd6173aba0425, type: 3}
     submeshIndices: 00000000
