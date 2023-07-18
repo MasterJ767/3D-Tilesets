@@ -60,42 +60,60 @@ namespace Version3
             }
         }
 
-        public bool GetNeighbourTile(Vector3Int neighbourPos, int index, TileCategory category)
+        public bool GetNeighbour(Vector3Int pos, TileCategory category)
         {
-            Vector3Int neighbourGlobalPos = new Vector3Int(chunkPos.x + neighbourPos.x, chunkPos.y + neighbourPos.y, chunkPos.z + neighbourPos.z);
+            if (pos.x >= 0 && pos.x < chunkWidth && pos.y >= 0 && pos.y < chunkHeight && pos.z >= 0 && pos.z < chunkWidth)
+            {
+                return SearchMeshesForNeighbour(pos, this, category);
+            }
+            
+            Vector3Int neighbourGlobalPos = new Vector3Int(chunkPos.x + pos.x, chunkPos.y + pos.y, chunkPos.z + pos.z);
             Vector3Int neighbourChunkPos = new Vector3Int(Mathf.FloorToInt(neighbourGlobalPos.x / (float)chunkWidth) * chunkWidth, Mathf.FloorToInt(neighbourGlobalPos.y / (float)chunkHeight) * chunkHeight, Mathf.FloorToInt(neighbourGlobalPos.z / (float)chunkWidth) * chunkWidth);
             Chunk neighbourChunk = terrainBuilder.GetChunk(neighbourChunkPos);
             Vector3Int neighbourLocalPos = neighbourGlobalPos - neighbourChunkPos;
             if (neighbourChunk == null) { return true; }
-            return GetNeighbour(neighbourLocalPos, neighbourChunk, index, category);
+            return SearchMeshesForNeighbour(neighbourLocalPos, neighbourChunk, category);
         }
 
-        public bool GetNeighbour(Vector3Int neighbourPos, Chunk chunk, int index, TileCategory category)
+        private bool SearchMeshesForNeighbour(Vector3Int pos, Chunk chunk, TileCategory category)
         {
-            for (int i = 0; i < chunk.meshes.Length; ++i)
+            foreach (TileMesh mesh in chunk.meshes)
             {
-                if (chunk.meshes[i] == null || i == index || chunk.meshes[i].GetTileCategory() != category) { continue; }
-                if (chunk.meshes[i].GetTile(neighbourPos).present) { return true; };
+                if (mesh == null || mesh.GetTileCategory() != category) { continue; }
+                if (mesh.GetTile(pos).present) { return true; }
             }
             return false;
         }
 
-        public void UpdateNeighbourTile(Vector3Int neighbourPos, int index, TileCategory category)
+        public void UpdateTile(Vector3Int pos, int i, TileCategory category)
         {
-            Vector3Int neighbourGlobalPos = new Vector3Int(chunkPos.x + neighbourPos.x, chunkPos.y + neighbourPos.y, chunkPos.z + neighbourPos.z);
-            Vector3Int neighbourChunkPos = new Vector3Int(Mathf.FloorToInt(neighbourGlobalPos.x / (float)chunkWidth) * chunkWidth, Mathf.FloorToInt(neighbourGlobalPos.y / (float)chunkHeight) * chunkHeight, Mathf.FloorToInt(neighbourGlobalPos.z / (float)chunkWidth) * chunkWidth);
-            Chunk neighbourChunk = terrainBuilder.GetChunk(neighbourChunkPos);
-            Vector3Int neighbourLocalPos = neighbourGlobalPos - neighbourChunkPos;
-            if (neighbourChunk == null) { return; }
-            UpdateNeighbour(neighbourLocalPos, neighbourChunk, index, category);
-        }
-
-        public void UpdateNeighbour(Vector3Int neighbourPos, Chunk chunk, int index, TileCategory category)
-        {
-            for (int i = 0; i < chunk.meshes.Length; ++i)
+            Chunk chunk;
+            Vector3Int position;
+            if (pos.x >= 0 && pos.x < chunkWidth && pos.y >= 0 && pos.y < chunkHeight && pos.z >= 0 && pos.z < chunkWidth)
             {
-                if (chunk.meshes[i] == null || i == index || chunk.meshes[i].GetTileCategory() != category) { continue; }
-                if (chunk.meshes[i].GetTile(neighbourPos).present) { chunk.meshes[i].UpdateTileExternal(neighbourPos); };
+                chunk = this;
+                position = pos;
+            }
+            else
+            {
+                Vector3Int neighbourGlobalPos = new Vector3Int(chunkPos.x + pos.x, chunkPos.y + pos.y, chunkPos.z + pos.z);
+                Vector3Int neighbourChunkPos = new Vector3Int(Mathf.FloorToInt(neighbourGlobalPos.x / (float)chunkWidth) * chunkWidth, Mathf.FloorToInt(neighbourGlobalPos.y / (float)chunkHeight) * chunkHeight, Mathf.FloorToInt(neighbourGlobalPos.z / (float)chunkWidth) * chunkWidth);
+                chunk = terrainBuilder.GetChunk(neighbourChunkPos);
+                if (chunk == null) { return; }
+                position = neighbourGlobalPos - neighbourChunkPos;
+            }
+
+            if (i >= 0)
+            {
+                chunk.meshes[i].UpdateTile(position);
+            }
+            else
+            {
+                foreach (TileMesh mesh in chunk.meshes)
+                {
+                    if (mesh == null || mesh.GetTileCategory() != category) { continue; }
+                    if (mesh.GetTile(position).present) { mesh.UpdateTile(position); }
+                }
             }
         }
     }

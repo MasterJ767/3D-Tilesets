@@ -36,7 +36,7 @@ namespace Version3
 
         public void AddTile(Vector3Int pos)
         {
-            UpdateTile(pos);
+            chunk.UpdateTile(pos, index, tile.category);
             UpdateNeighbours(pos);
         }
 
@@ -44,72 +44,42 @@ namespace Version3
         {
             int sides = DetermineNeighbours(pos);
 
-            if ((sides & 1) == 1) { UpdateTile(pos + new Vector3Int(0, 0, 1)); }
-            if ((sides & 2) == 2) { UpdateTile(pos + new Vector3Int(1, 0, 1)); }
-            if ((sides & 4) == 4) { UpdateTile(pos + new Vector3Int(1, 0, 0)); }
-            if ((sides & 8) == 8) { UpdateTile(pos + new Vector3Int(1, 0, -1)); }
-            if ((sides & 16) == 16) { UpdateTile(pos + new Vector3Int(0, 0, -1)); }
-            if ((sides & 32) == 32) { UpdateTile(pos + new Vector3Int(-1, 0, -1)); }
-            if ((sides & 64) == 64) { UpdateTile(pos + new Vector3Int(-1, 0, 0)); }
-            if ((sides & 128) == 128) { UpdateTile(pos + new Vector3Int(-1, 0, 1)); }
-            if ((sides & 256) == 256) { UpdateTile(pos + new Vector3Int(0, 1, 0)); }
-            if ((sides & 512) == 512) { UpdateTile(pos + new Vector3Int(0, -1, 0)); }
-        }
-
-        private void UpdateTile(Vector3Int pos)
-        {
-            if (pos.x < 0 || pos.x >= width || pos.y < 0 || pos.y >= height || pos.z < 0 || pos.z >= width)
-            {
-                chunk.UpdateNeighbourTile(pos, index, tile.category);
-                return;
-            }
-
-            int sides = DetermineNeighbours(pos);
-
-            foreach (Tuple<int, int, int> i in Iterator.iter)
-            {
-                bool result = CompareChange(sides, i.Item1, pos, i.Item2, i.Item3);
-                if (result) { return; }
-            }
-        }
-
-        public void UpdateTileExternal(Vector3Int pos)
-        {
-            if (tileMap[pos.x, pos.y, pos.z].present)
-            {
-                int sides = DetermineNeighbours(pos);
-
-                foreach (Tuple<int, int, int> i in Iterator.iter)
-                {
-                    bool result = CompareChange(sides, i.Item1, pos, i.Item2, i.Item3);
-                    if (result) { return; }
-                }
-            }
+            if ((sides & 1) == 1) { chunk.UpdateTile(pos + new Vector3Int(0, 0, 1), -1, tile.category); }
+            if ((sides & 2) == 2) { chunk.UpdateTile(pos + new Vector3Int(1, 0, 1), -1, tile.category); }
+            if ((sides & 4) == 4) { chunk.UpdateTile(pos + new Vector3Int(1, 0, 0), -1, tile.category); }
+            if ((sides & 8) == 8) { chunk.UpdateTile(pos + new Vector3Int(1, 0, -1), -1, tile.category); }
+            if ((sides & 16) == 16) { chunk.UpdateTile(pos + new Vector3Int(0, 0, -1), -1, tile.category); }
+            if ((sides & 32) == 32) { chunk.UpdateTile(pos + new Vector3Int(-1, 0, -1), -1, tile.category); }
+            if ((sides & 64) == 64) { chunk.UpdateTile(pos + new Vector3Int(-1, 0, 0), -1, tile.category); }
+            if ((sides & 128) == 128) { chunk.UpdateTile(pos + new Vector3Int(-1, 0, 1), -1, tile.category); }
+            if ((sides & 256) == 256) { chunk.UpdateTile(pos + new Vector3Int(0, 1, 0), -1, tile.category); }
+            if ((sides & 512) == 512) { chunk.UpdateTile(pos + new Vector3Int(0, -1, 0), -1, tile.category); }
         }
 
         private int DetermineNeighbours(Vector3Int pos)
         {
             int sides = 0;
-            sides += GetNeighbour(pos + new Vector3Int(0, 0, 1)) ? 1 : 0; // front 
-            sides += GetNeighbour(pos + new Vector3Int(1, 0, 1)) ? 1 << 1 : 0; // front right 
-            sides += GetNeighbour(pos + new Vector3Int(1, 0, 0)) ? 1 << 2 : 0; // right
-            sides += GetNeighbour(pos + new Vector3Int(1, 0, -1)) ? 1 << 3 : 0; // back right 
-            sides += GetNeighbour(pos + new Vector3Int(0, 0, -1)) ? 1 << 4 : 0; // back
-            sides += GetNeighbour(pos + new Vector3Int(-1, 0, -1)) ? 1 << 5 : 0; // back left
-            sides += GetNeighbour(pos + new Vector3Int(-1, 0, 0)) ? 1 << 6 : 0; // left
-            sides += GetNeighbour(pos + new Vector3Int(-1, 0, 1)) ? 1 << 7 : 0; // front left 
-            sides += GetNeighbour(pos + new Vector3Int(0, 1, 0)) ? 1 << 8 : 0; // up
-            sides += GetNeighbour(pos + new Vector3Int(0, -1, 0)) ? 1 << 9 : 0; // down
+            sides += chunk.GetNeighbour(pos + new Vector3Int(0, 0, 1), tile.category) ? 1 : 0; // front 
+            sides += chunk.GetNeighbour(pos + new Vector3Int(1, 0, 1), tile.category) ? 1 << 1 : 0; // front right 
+            sides += chunk.GetNeighbour(pos + new Vector3Int(1, 0, 0), tile.category) ? 1 << 2 : 0; // right
+            sides += chunk.GetNeighbour(pos + new Vector3Int(1, 0, -1), tile.category) ? 1 << 3 : 0; // back right 
+            sides += chunk.GetNeighbour(pos + new Vector3Int(0, 0, -1), tile.category) ? 1 << 4 : 0; // back
+            sides += chunk.GetNeighbour(pos + new Vector3Int(-1, 0, -1), tile.category) ? 1 << 5 : 0; // back left
+            sides += chunk.GetNeighbour(pos + new Vector3Int(-1, 0, 0), tile.category) ? 1 << 6 : 0; // left
+            sides += chunk.GetNeighbour(pos + new Vector3Int(-1, 0, 1), tile.category) ? 1 << 7 : 0; // front left 
+            sides += chunk.GetNeighbour(pos + new Vector3Int(0, 1, 0), tile.category) ? 1 << 8 : 0; // up
+            sides += chunk.GetNeighbour(pos + new Vector3Int(0, -1, 0), tile.category) ? 1 << 9 : 0; // down
             return sides;
         }
 
-        private bool GetNeighbour(Vector3Int neighbourPos)
+        public void UpdateTile(Vector3Int pos)
         {
-            if (neighbourPos.x < 0 || neighbourPos.x >= width || neighbourPos.y < 0 || neighbourPos.y >= height || neighbourPos.z < 0 || neighbourPos.z >= width)
+            int sides = DetermineNeighbours(pos);
+            foreach (Tuple<int, int, int> i in Iterator.smartIter)
             {
-                return chunk.GetNeighbourTile(neighbourPos, index, tile.category);
+                bool result = CompareChange(sides, i.Item1, pos, i.Item2, i.Item3);
+                if (result) { return; }
             }
-            return tileMap[neighbourPos.x, neighbourPos.y, neighbourPos.z].present;
         }
 
         private bool CompareChange(int sides, int mask, Vector3Int pos, int index, int rotation)
@@ -243,7 +213,7 @@ namespace Version3
 
     public static class Iterator
     {
-        public static readonly Tuple<int, int, int>[] iter = new Tuple<int, int, int>[]{
+        public static readonly Tuple<int, int, int>[] smartIter = new Tuple<int, int, int>[]{
                 // Has tile above
                 new Tuple<int, int, int>(341, -1, 0), // F R B L U
                 new Tuple<int, int, int>(325, 8, 0), // L F R U
