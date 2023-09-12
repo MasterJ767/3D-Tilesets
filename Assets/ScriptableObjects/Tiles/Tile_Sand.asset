@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileName: Sand
   category: 0
-  logic: 1
   meshData:
   - mesh: {fileID: 1206208024434927118, guid: e179536d93dbd6540bdbd6173aba0425, type: 3}
     submeshIndices: 00000000
@@ -41,7 +40,7 @@ MonoBehaviour:
   - mesh: {fileID: -5713793181471982611, guid: 3cf73cd21d6d30a488c491ee8dde7b3f, type: 3}
     submeshIndices: 0000000001000000
   - mesh: {fileID: -1784328490351739995, guid: 1fa26d94ef47a7d4fb40d34b9245cd4a, type: 3}
-    submeshIndices: 0000000001000000
+    submeshIndices: 0100000000000000
   - mesh: {fileID: -8957233677073834390, guid: ae051fff086bbb44182b9225d9b08b74, type: 3}
     submeshIndices: 0100000000000000
   - mesh: {fileID: -2573939809138534047, guid: 0bcf6226eaf268643843618b5889fc67, type: 3}
