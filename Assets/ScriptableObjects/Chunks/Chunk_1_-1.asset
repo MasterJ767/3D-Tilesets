@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 379c0c1b638c6e64fac02fee4b2f1ff9, type: 3}
-  m_Name: Chunk_1_0
+  m_Name: Chunk_1_-1
   m_EditorClassIdentifier: 
-  chunkCoord: {x: 1, y: 0, z: 0}
+  chunkCoord: {x: 1, y: 0, z: -1}
   maps:
+  - {fileID: 21300000, guid: 6ad6c53b71fb43745bdf97e23de4b0eb, type: 3}
+  - {fileID: 21300000, guid: f0f0b01c8dc6544429d7557b9fe11e30, type: 3}
   - {fileID: 21300000, guid: 74d05ce27250d964b8a443019d8e76a0, type: 3}
-  - {fileID: 21300000, guid: e90f7128c4bce00449c5686c7fd3ed33, type: 3}
-  - {fileID: 21300000, guid: 36de28f6b1bbcc04ba98a0db278254a9, type: 3}
