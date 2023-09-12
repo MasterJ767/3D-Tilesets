@@ -40,14 +40,45 @@ namespace Version3
             {
                 for (int z = 0; z < chunkWidth; ++z)
                 {
-                    float v = maps[i].texture.GetPixel(x, z).r;
-                    if (v == 1f) { continue; }
-                    int y = Mathf.RoundToInt((1f - v) * 16f) - 1;
-                    while (y >= 0) {
-                        tileMesh.AddTile(new Vector3Int(x, y, z));
-                        y--;
-                    }
+                    FillColumn(i, x, z, tileMesh);
                 }
+            }
+        }
+
+        public void FillColumn(int i, int x, int z, TileMesh tileMesh)
+        {
+            float r = maps[i].texture.GetPixel(x, z).r;
+            float g = maps[i].texture.GetPixel(x, z).g;
+            float b = maps[i].texture.GetPixel(x, z).b;
+            int mode = Mathf.RoundToInt((1f - r) * 16f) - 1;
+            int min = Mathf.Max(Mathf.RoundToInt((1f - g) * 16f) - 1, 0);
+            int max = Mathf.Max(Mathf.RoundToInt((1f - b) * 16f) - 1, 0);
+
+            switch (mode)
+            {
+                case -1: // ignore column
+                    break;
+                case 0: // fill column between green and blue value, leaving other values empty for air
+                    for (int y = min; y <= max; ++y)
+                    {
+                        tileMesh.AddTile(new Vector3Int(x, y, z));
+                    }
+                    break;
+                case 1: // fill column, leaving values between green and blue empty for air
+                    for (int y = 0; y < min; ++y)
+                    {
+                        tileMesh.AddTile(new Vector3Int(x, y, z));
+                    }
+                    for (int y = max + 1; y < chunkHeight; ++y)
+                    {
+                        tileMesh.AddTile(new Vector3Int(x, y, z));
+                    }
+                    break;
+                case 2: // place at height green facing north
+                    tileMesh.AddTile(new Vector3Int(x, min, z));
+                    break;
+                default: 
+                    break;
             }
         }
 
