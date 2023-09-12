@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e312e25cdeb62e439873c0567cdcf96, type: 3}
+  m_Name: Tile_Stair
+  m_EditorClassIdentifier: 
+  tileName: Stair
+  category: 1
+  meshData:
+  - mesh: {fileID: 3402742096233047544, guid: e2a92c002d835324a87f14169e76cf7b, type: 3}
+    submeshIndices: 00000000
+  - mesh: {fileID: 8529465117059132032, guid: 21aca858a05bfc24990ef54f60f97c58, type: 3}
+    submeshIndices: 0100000000000000
+  - mesh: {fileID: 5024343818107651090, guid: ae35fb8fda1d0e840b5748e972ef77cf, type: 3}
+    submeshIndices: 0100000000000000
+  - mesh: {fileID: 4138993205825854371, guid: a20e08a884f1d9a46bf6b803767c8693, type: 3}
+    submeshIndices: 0100000000000000
+  materials:
+  - {fileID: 2100000, guid: 168922bb18a866b4fa0537fbeff5b5a2, type: 2}
+  - {fileID: 2100000, guid: b9ef7e024148c224395b4ba74edf7465, type: 2}

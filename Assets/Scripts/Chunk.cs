@@ -61,21 +61,30 @@ namespace Version3
                 case 0: // fill column between green and blue value, leaving other values empty for air
                     for (int y = min; y <= max; ++y)
                     {
-                        tileMesh.AddTile(new Vector3Int(x, y, z));
+                        tileMesh.AddTile(new Vector3Int(x, y, z), 0);
                     }
                     break;
                 case 1: // fill column, leaving values between green and blue empty for air
                     for (int y = 0; y < min; ++y)
                     {
-                        tileMesh.AddTile(new Vector3Int(x, y, z));
+                        tileMesh.AddTile(new Vector3Int(x, y, z), 0);
                     }
                     for (int y = max + 1; y < chunkHeight; ++y)
                     {
-                        tileMesh.AddTile(new Vector3Int(x, y, z));
+                        tileMesh.AddTile(new Vector3Int(x, y, z), 0);
                     }
                     break;
                 case 2: // place at height green facing north
-                    tileMesh.AddTile(new Vector3Int(x, min, z));
+                    tileMesh.AddTile(new Vector3Int(x, min, z), 0);
+                    break;
+                case 3: // place at height green facing east
+                    tileMesh.AddTile(new Vector3Int(x, min, z), 90);
+                    break;
+                case 4: // place at height green facing south
+                    tileMesh.AddTile(new Vector3Int(x, min, z), 180);
+                    break;
+                case 5: // place at height green facing west
+                    tileMesh.AddTile(new Vector3Int(x, min, z), 270);
                     break;
                 default: 
                     break;
@@ -116,7 +125,7 @@ namespace Version3
             return false;
         }
 
-        public void UpdateTile(Vector3Int pos, int i, TileCategory category)
+        public void UpdateTile(Vector3Int pos, int i, int rotation, TileCategory category)
         {
             Chunk chunk;
             Vector3Int position;
@@ -136,14 +145,14 @@ namespace Version3
 
             if (i >= 0)
             {
-                chunk.meshes[i].UpdateTile(position);
+                chunk.meshes[i].UpdateTile(position, rotation);
             }
             else
             {
                 foreach (TileMesh mesh in chunk.meshes)
                 {
                     if (mesh == null || mesh.GetTileCategory() != category) { continue; }
-                    if (mesh.GetTile(position).present) { mesh.UpdateTile(position); }
+                    if (mesh.GetTile(position).present) { mesh.UpdateTile(position, rotation); }
                 }
             }
         }

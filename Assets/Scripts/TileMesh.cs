@@ -34,26 +34,26 @@ namespace Version3
             }
         }
 
-        public void AddTile(Vector3Int pos)
+        public void AddTile(Vector3Int pos, int rotation)
         {
-            chunk.UpdateTile(pos, index, tile.category);
-            UpdateNeighbours(pos);
+            chunk.UpdateTile(pos, index, rotation, tile.category);
+            UpdateNeighbours(pos, rotation);
         }
 
-        private void UpdateNeighbours(Vector3Int pos)
+        private void UpdateNeighbours(Vector3Int pos, int rotation)
         {
             int sides = DetermineNeighbours(pos);
 
-            if ((sides & 1) == 1) { chunk.UpdateTile(pos + new Vector3Int(0, 0, 1), -1, tile.category); }
-            if ((sides & 2) == 2) { chunk.UpdateTile(pos + new Vector3Int(1, 0, 1), -1, tile.category); }
-            if ((sides & 4) == 4) { chunk.UpdateTile(pos + new Vector3Int(1, 0, 0), -1, tile.category); }
-            if ((sides & 8) == 8) { chunk.UpdateTile(pos + new Vector3Int(1, 0, -1), -1, tile.category); }
-            if ((sides & 16) == 16) { chunk.UpdateTile(pos + new Vector3Int(0, 0, -1), -1, tile.category); }
-            if ((sides & 32) == 32) { chunk.UpdateTile(pos + new Vector3Int(-1, 0, -1), -1, tile.category); }
-            if ((sides & 64) == 64) { chunk.UpdateTile(pos + new Vector3Int(-1, 0, 0), -1, tile.category); }
-            if ((sides & 128) == 128) { chunk.UpdateTile(pos + new Vector3Int(-1, 0, 1), -1, tile.category); }
-            if ((sides & 256) == 256) { chunk.UpdateTile(pos + new Vector3Int(0, 1, 0), -1, tile.category); }
-            if ((sides & 512) == 512) { chunk.UpdateTile(pos + new Vector3Int(0, -1, 0), -1, tile.category); }
+            if ((sides & 1) == 1) { chunk.UpdateTile(pos + new Vector3Int(0, 0, 1), -1, rotation, tile.category); }
+            if ((sides & 2) == 2) { chunk.UpdateTile(pos + new Vector3Int(1, 0, 1), -1, rotation, tile.category); }
+            if ((sides & 4) == 4) { chunk.UpdateTile(pos + new Vector3Int(1, 0, 0), -1, rotation, tile.category); }
+            if ((sides & 8) == 8) { chunk.UpdateTile(pos + new Vector3Int(1, 0, -1), -1, rotation, tile.category); }
+            if ((sides & 16) == 16) { chunk.UpdateTile(pos + new Vector3Int(0, 0, -1), -1, rotation, tile.category); }
+            if ((sides & 32) == 32) { chunk.UpdateTile(pos + new Vector3Int(-1, 0, -1), -1, rotation, tile.category); }
+            if ((sides & 64) == 64) { chunk.UpdateTile(pos + new Vector3Int(-1, 0, 0), -1, rotation, tile.category); }
+            if ((sides & 128) == 128) { chunk.UpdateTile(pos + new Vector3Int(-1, 0, 1), -1, rotation, tile.category); }
+            if ((sides & 256) == 256) { chunk.UpdateTile(pos + new Vector3Int(0, 1, 0), -1, rotation, tile.category); }
+            if ((sides & 512) == 512) { chunk.UpdateTile(pos + new Vector3Int(0, -1, 0), -1, rotation, tile.category); }
         }
 
         private int DetermineNeighbours(Vector3Int pos)
@@ -72,7 +72,7 @@ namespace Version3
             return sides;
         }
 
-        private Tuple<int, int, int>[] GetIterator()
+        private Tuple<int, int, int>[] GetIterator(int rotation)
         {
             switch (tile.category)
             {
@@ -80,15 +80,29 @@ namespace Version3
                     return Iterator.terrain;
                 case TileCategory.Fluid:
                     return Iterator.fluid;
+                case TileCategory.Stair:
+                    switch (rotation)
+                    {
+                        case 0:
+                            return Iterator.stairN;
+                        case 90:
+                            return Iterator.stairE;
+                        case 180:
+                            return Iterator.stairS;
+                        case 270:
+                            return Iterator.stairW;
+                        default:
+                            return Iterator.basic;
+                    }
                 default:
                     return Iterator.basic;
             }
         }
 
-        public void UpdateTile(Vector3Int pos)
+        public void UpdateTile(Vector3Int pos, int rotation)
         {
             int sides = DetermineNeighbours(pos);
-            Tuple<int, int, int>[] iter = GetIterator();
+            Tuple<int, int, int>[] iter = GetIterator(rotation);
 
             foreach (Tuple<int, int, int> i in iter)
             {
@@ -320,6 +334,42 @@ namespace Version3
         public static readonly Tuple<int, int, int>[] fluid = new Tuple<int, int, int>[]{
             new Tuple<int, int, int>(256, -1, 0), // U
             new Tuple<int, int, int>(0, 0, 0)
+        };
+
+        public static readonly Tuple<int, int, int>[] stairN = new Tuple<int, int, int>[]{
+            new Tuple<int, int, int>(68, 0, 0), // L R
+
+            new Tuple<int, int, int>(4, 1, 0), // R
+            new Tuple<int, int, int>(64, 2, 0), // L
+
+            new Tuple<int, int, int>(0, 3, 0)
+        };
+
+        public static readonly Tuple<int, int, int>[] stairE = new Tuple<int, int, int>[]{
+            new Tuple<int, int, int>(17, 0, 90), // F B
+
+            new Tuple<int, int, int>(1, 2, 90), // F
+            new Tuple<int, int, int>(16, 1, 90), // B
+
+            new Tuple<int, int, int>(0, 3, 90)
+        };
+
+        public static readonly Tuple<int, int, int>[] stairS = new Tuple<int, int, int>[]{
+            new Tuple<int, int, int>(68, 0, 180), // L R
+
+            new Tuple<int, int, int>(4, 2, 180), // R
+            new Tuple<int, int, int>(64, 1, 180), // L
+
+            new Tuple<int, int, int>(0, 3, 180)
+        };
+
+        public static readonly Tuple<int, int, int>[] stairW = new Tuple<int, int, int>[]{
+            new Tuple<int, int, int>(17, 0, 270), // F B
+
+            new Tuple<int, int, int>(1, 1, 270), // F
+            new Tuple<int, int, int>(16, 2, 270), // B
+
+            new Tuple<int, int, int>(0, 3, 270)
         };
     }
 }
